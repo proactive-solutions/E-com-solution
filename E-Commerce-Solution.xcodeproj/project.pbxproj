@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F2D551922DFACB6E003841BA /* ValidationKit in Frameworks */ = {isa = PBXBuildFile; productRef = F2D551912DFACB6E003841BA /* ValidationKit */; };
+		F2D551952DFACC6D003841BA /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = F2D551942DFACC6D003841BA /* Models */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F2D551742DFAC72A003841BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2D551952DFACC6D003841BA /* Models in Frameworks */,
+				F2D551922DFACB6E003841BA /* ValidationKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = "E-Commerce-Solution";
 			packageProductDependencies = (
+				F2D551912DFACB6E003841BA /* ValidationKit */,
+				F2D551942DFACC6D003841BA /* Models */,
 			);
 			productName = "E-Commerce-Solution";
 			productReference = F2D5515E2DFAC728003841BA /* E-Commerce-Solution.app */;
@@ -195,6 +204,10 @@
 			);
 			mainGroup = F2D551552DFAC728003841BA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F2D551902DFACB6E003841BA /* XCLocalSwiftPackageReference "Packages/ValidationKit" */,
+				F2D551932DFACC6D003841BA /* XCLocalSwiftPackageReference "Packages/Models" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2D5515F2DFAC728003841BA /* Products */;
 			projectDirPath = "";
@@ -572,6 +585,28 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F2D551902DFACB6E003841BA /* XCLocalSwiftPackageReference "Packages/ValidationKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/ValidationKit;
+		};
+		F2D551932DFACC6D003841BA /* XCLocalSwiftPackageReference "Packages/Models" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Models;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F2D551912DFACB6E003841BA /* ValidationKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ValidationKit;
+		};
+		F2D551942DFACC6D003841BA /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F2D551562DFAC728003841BA /* Project object */;
 }
