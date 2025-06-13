@@ -8,7 +8,7 @@ import ValidationKit
 public struct MobileNumber {
   public let value: String
   public init(_ value: String) throws {
-    guard value.count == 10 else { throw Validator.EmailValidationResult.empty }
+    // TODO: apply the mobile number validation logic here
         self.value = value
     }
 }

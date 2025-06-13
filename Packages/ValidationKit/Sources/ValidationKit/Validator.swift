@@ -156,4 +156,44 @@ public enum Validator {
         /// The password is valid according to all specified requirements.
         case validPassword
     }
+
+  /// Represents the result of mobile number validation.
+  ///
+  /// This enumeration provides a clear indication of whether a mobile number
+  /// passed validation according to international phone number standards.
+  ///
+  /// ## Overview
+  ///
+  /// The validation result helps determine the next steps in your application flow.
+  /// You can use pattern matching or switch statements to handle different validation outcomes.
+  ///
+  /// ## Usage
+  ///
+  /// ```swift
+  /// let result = Validator.validate(mobileNumber: phoneNumber)
+  ///
+  /// switch result {
+  /// case .valid:
+  ///     // Proceed with phone number processing
+  ///     submitForm()
+  /// case .invalid:
+  ///     // Show error message to user
+  ///     showValidationError()
+  /// }
+  /// ```
+  ///
+  /// ## Topics
+  ///
+  /// ### Cases
+  ///
+  /// - ``valid``
+  /// - ``invalid``
+  ///
+  /// ## See Also
+  ///
+  /// - ``Validator/validate(mobileNumber:)``
+  public enum MobileNumberValidationResult: Error {
+    case valid
+    case invalid
+  }
 }
