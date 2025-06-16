@@ -18,17 +18,12 @@ final class NameValidationTests: XCTestCase {
     }
 
     func testValidNames() {
-        let validNames = [
-            "James",
-            "Mary",
-            "John"
-        ]
+        let validNames = ["James", "Mary", "John"]
 
         for name in validNames {
-            XCTAssertEqual(
-                Validator.validate(name: name),
-                .validName,
-                "Expected '\(name)' to be valid"
+            XCTAssertNoThrow(
+                try Validator.validate(name: name).get(),
+                "'\(name)' should be valid"
             )
         }
     }
@@ -39,27 +34,41 @@ final class NameValidationTests: XCTestCase {
             "",
             "A",
             "Bo",
-            "   ",
-            "  A  "
+            "   ", // Only whitespace
+            "  A  ", // Single char with whitespace
+            "\t\n", // Other whitespace characters
+            "  AB  ", // Two chars with whitespace
         ]
 
         for name in shortNames {
-            XCTAssertEqual(
-                Validator.validate(name: name),
-                .tooShort(minimum: 3),
-                "Expected '\(name)' to be too short"
-            )
+            let result = Validator.validate(name: name)
+            switch result {
+            case .success:
+                XCTFail("Expected '\(name)' to fail validation but it succeeded")
+            case let .failure(error):
+                XCTAssertEqual(
+                    error,
+                    .tooShort(minimum: 3),
+                    "Expected '\(name)' to be too short, but got different error: \(error)"
+                )
+            }
         }
     }
 
     // Test maximum length validation
     func testNameTooLong() {
         let longName = String(repeating: "A", count: 31)
-        XCTAssertEqual(
-            Validator.validate(name: longName),
-            .tooLong(maximum: 30),
-            "Expected long name to exceed maximum length"
-        )
+        let result = Validator.validate(name: name)
+        switch result {
+        case .success:
+            XCTFail("Expected '\(name)' to fail validation but it succeeded")
+        case let .failure(error):
+            XCTAssertEqual(
+                error,
+                .tooLong(maximum: 30),
+                "Expected '\(name)' to be too long, but got different error: \(error)"
+            )
+        }
     }
 
     // Test invalid characters
@@ -69,39 +78,45 @@ final class NameValidationTests: XCTestCase {
             "Mary#Smith",
             "User@Name",
             "Test$Name",
-            "Name!Here"
+            "Name!Here",
         ]
 
         for name in invalidNames {
-            XCTAssertEqual(
-                Validator.validate(name: name),
-                .invalidCharacters,
-                "Expected '\(name)' to contain invalid characters"
-            )
+            let result = Validator.validate(name: name)
+            switch result {
+            case .success:
+                XCTFail("Expected '\(name)' to fail validation but it succeeded")
+            case let .failure(error):
+                XCTAssertEqual(
+                    error,
+                    .invalidCharacters,
+                    "Expected '\(name)' to contain invalid characters"
+                )
+            }
         }
     }
 
     // Test whitespace handling
     func testWhitespaceHandling() {
-        XCTAssertEqual(
-            Validator.validate(name: "   A   "),
-            .tooShort(minimum: 3),
-            "Expected trimmed short name to be invalid"
-        )
+        let result = Validator.validate(name: "   A   ")
+        switch result {
+        case .success:
+            XCTFail("Expected '\(name)' to fail validation but it succeeded")
+        case let .failure(error):
+            XCTAssertEqual(
+                error,
+                .tooShort(minimum: 3),
+                "Expected '\(name)' to contain invalid characters"
+            )
+        }
     }
 
     // Test custom length parameters
     func testCustomLengthValidation() {
-        XCTAssertEqual(
-            Validator.validate(name: "Bob", minLength: 3, maxLength: 10),
-            .validName,
-            "Expected 'Bob' to be valid with custom minimum length"
-        )
+        var result = Validator.validate(name: "Bob", minLength: 3, maxLength: 10)
+        XCTAssertNoThrow(try result.get(), "Expected 'Bob' to be valid with custom minimum length")
 
-        XCTAssertEqual(
-            Validator.validate(name: "Alexander", minLength: 3, maxLength: 7),
-            .tooLong(maximum: 7),
-            "Expected 'Alexander' to be too long with custom maximum length"
-        )
+        result = Validator.validate(name: "Alexander", minLength: 3, maxLength: 7)
+        XCTAssertThrowsError(try result.get(), "Expected 'Alexander' to be too long with custom maximum length")
     }
 }

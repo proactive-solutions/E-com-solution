@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "DDED8F4C-7154-4ED7-9F8E-12331AE4E4C8",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:E-Commerce-Solution.xcodeproj",
+      "identifier" : "F2D5515D2DFAC728003841BA",
+      "name" : "E-Commerce-Solution"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:E-Commerce-Solution.xcodeproj",
+        "identifier" : "F2D551722DFAC72A003841BA",
+        "name" : "E-Commerce-SolutionTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:E-Commerce-Solution.xcodeproj",
+        "identifier" : "F2D5517C2DFAC72A003841BA",
+        "name" : "E-Commerce-SolutionUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

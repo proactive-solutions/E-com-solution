@@ -29,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F2523A532E0025640018D741 /* E-Commerce-Solution.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E-Commerce-Solution.xctestplan"; sourceTree = "<group>"; };
 		F2D5515E2DFAC728003841BA /* E-Commerce-Solution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "E-Commerce-Solution.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2D551732DFAC72A003841BA /* E-Commerce-SolutionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "E-Commerce-SolutionTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2D5517D2DFAC72A003841BA /* E-Commerce-SolutionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "E-Commerce-SolutionUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +83,7 @@
 		F2D551552DFAC728003841BA = {
 			isa = PBXGroup;
 			children = (
+				F2523A532E0025640018D741 /* E-Commerce-Solution.xctestplan */,
 				F2D551602DFAC728003841BA /* E-Commerce-Solution */,
 				F2D551762DFAC72A003841BA /* E-Commerce-SolutionTests */,
 				F2D551802DFAC72A003841BA /* E-Commerce-SolutionUITests */,

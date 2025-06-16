@@ -72,11 +72,10 @@ public enum Validator {
         ]
     }
 
-    /// Represents the result of a name validation operation.
+    /// Represents the error in a name validation operation.
     ///
-    /// This enum provides detailed information about why a name validation
-    /// succeeded or failed.
-    public enum NameValidationResult: Error {
+    /// This enum provides detailed information about why a name validation failed.
+    public enum NameValidationError: Error {
         /// The name is shorter than the minimum required length.
         /// - Parameter minimum: The minimum required length.
         case tooShort(minimum: UInt)
@@ -87,24 +86,17 @@ public enum Validator {
 
         /// The name contains characters that don't match the allowed pattern.
         case invalidCharacters
-
-        /// The name is valid according to all validation rules.
-        case validName
     }
 
-    /// Represents the result of an email validation operation.
+    /// Represents the error in an email validation operation.
     ///
-    /// This enum provides information about why an email validation
-    /// succeeded or failed.
-    public enum EmailValidationResult: Error {
+    /// This enum provides information about why an email validation failed.
+    public enum EmailValidationError: Error {
         /// The email string is empty after trimming whitespace.
         case empty
 
         /// The email string does not conform to a valid email address format.
         case invalidEmailAddress
-
-        /// The email is valid according to RFC 5322 standards.
-        case validEmail
     }
 
     /// Defines requirements that can be used to validate passwords.
@@ -146,15 +138,11 @@ public enum Validator {
 
     /// Represents the result of a password validation operation.
     ///
-    /// This enum provides detailed information about why a password validation
-    /// succeeded or failed.
-    public enum PasswordValidationResult {
+    /// This enum provides detailed information about why a password validation failed.
+    public enum PasswordValidationError: Error {
         /// The password failed to meet one or more requirements.
         /// - Parameter [PasswordValidationRequirement]: The specific requirements that weren't met.
         case invalidPassword([PasswordValidationRequirement])
-
-        /// The password is valid according to all specified requirements.
-        case validPassword
     }
 
   /// Represents the result of mobile number validation.
@@ -176,9 +164,6 @@ public enum Validator {
   /// case .valid:
   ///     // Proceed with phone number processing
   ///     submitForm()
-  /// case .invalid:
-  ///     // Show error message to user
-  ///     showValidationError()
   /// }
   /// ```
   ///
@@ -186,14 +171,10 @@ public enum Validator {
   ///
   /// ### Cases
   ///
-  /// - ``valid``
-  /// - ``invalid``
-  ///
-  /// ## See Also
+  /// - ``invalidMobileNumber``
   ///
   /// - ``Validator/validate(mobileNumber:)``
-  public enum MobileNumberValidationResult: Error {
-    case valid
-    case invalid
+  public enum MobileNumberValidationError: Error {
+    case invalidMobileNumber
   }
 }

@@ -6,7 +6,7 @@
 //
 import Foundation
 
-extension Validator.PasswordValidationResult: Mappable {}
+extension Validator.PasswordValidationError: Mappable {}
 
 extension Validator.PasswordValidationRequirement: Mappable {}
 
@@ -28,14 +28,13 @@ extension Validator.PasswordValidationRequirement: Equatable {
     }
 }
 
-extension Validator.PasswordValidationResult: Equatable {
+extension Validator.PasswordValidationError: Equatable {
     public static func == (
-        lhs: Validator.PasswordValidationResult,
-        rhs: Validator.PasswordValidationResult
+        lhs: Validator.PasswordValidationError,
+        rhs: Validator.PasswordValidationError
     ) -> Bool {
         switch (lhs, rhs) {
         case (.invalidPassword, .invalidPassword): true
-        case (.validPassword, .validPassword): true
         default: false
         }
     }
@@ -70,7 +69,7 @@ public extension Validator {
         password: String,
         against requirements: Set<PasswordValidationRequirement> = defaultPasswordRequirements,
         specialCharacters: String = defaultSpecialCharacters
-    ) -> PasswordValidationResult {
+    ) -> Result<Void, PasswordValidationError> {
         var failures: [PasswordValidationRequirement] = []
 
         for requirement in requirements {
@@ -106,13 +105,18 @@ public extension Validator {
             case let .regex(passwordValidationRegex):
                 let passwordPredicate = NSPredicate(
                     format: "SELF MATCHES %@",
-                    passwordValidationRegex)
+                    passwordValidationRegex
+                )
                 if !passwordPredicate.evaluate(with: password) {
                     failures.append(requirement)
                 }
             }
         }
 
-        return if failures.isEmpty { .validPassword } else { .invalidPassword(failures) }
+        return if failures.isEmpty {
+            .success(())
+        } else {
+            .failure(.invalidPassword(failures))
+        }
     }
 }

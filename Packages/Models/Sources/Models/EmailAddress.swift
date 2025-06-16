@@ -6,14 +6,16 @@
 //
 import ValidationKit
 
-public struct EmailAddress {
+public struct EmailAddress: Equatable {
     public let value: String
 
     public init(_ value: String) throws {
-      let result = Validator.validate(email: value)
-      guard result == .validEmail else {
-        throw result
-      }
-      self.value = value
+        switch Validator.validate(email: value) {
+        case .success:
+            self.value = value
+
+        case let .failure(reason):
+            throw reason
+        }
     }
 }

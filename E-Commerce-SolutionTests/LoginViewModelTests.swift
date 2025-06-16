@@ -15,10 +15,10 @@ struct LoginViewModelTests {
     // MARK: - Initialization Tests
     
     @Test("LoginViewModel initializes with all properties set to nil")
-    func initializesWithNilProperties() {
-        #expect(viewModel.email == nil)
-        #expect(viewModel.name == nil)
-        #expect(viewModel.mobileNumber == nil)
+    func initializesWithFailureProperties() {
+        #expect(viewModel.email == .failure(.validEmail))
+        #expect(viewModel.name == .failure(.validName))
+        #expect(viewModel.mobileNumber == .failure(.valid))
     }
     
     // MARK: - Email Validation Tests

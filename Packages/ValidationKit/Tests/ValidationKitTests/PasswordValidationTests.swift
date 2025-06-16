@@ -13,13 +13,16 @@ final class PasswordValidatorTests: XCTestCase {
             .digits(1),
             .specialCharacters(1),
         ]
-
+        let passwordUnderTest = "Passw0rd!"
         let result = Validator.validate(
-            password: "Passw0rd!",
+            password: passwordUnderTest,
             against: requirements
         )
 
-        XCTAssertEqual(result, .validPassword)
+        XCTAssertNoThrow(
+            try result.get(),
+            "\(passwordUnderTest) Should be a valid password for \(requirements)"
+        )
     }
 
     // Test minimum length requirement
@@ -28,11 +31,15 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "Short1!", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.minLength(8)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to length")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.minLength(8)))
+            }
         }
     }
 
@@ -42,11 +49,15 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "LongPassword", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.maxLength(5)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to length")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.maxLength(5)))
+            }
         }
     }
 
@@ -56,11 +67,15 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "Passw0rd!", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.uppercaseLetters(2)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to insufficient uppercase")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.uppercaseLetters(2)))
+            }
         }
     }
 
@@ -70,11 +85,15 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "TESTpass1!", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.lowercaseLetters(5)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to insufficient lowercase")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.lowercaseLetters(5)))
+            }
         }
     }
 
@@ -84,25 +103,33 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "Password1!", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.digits(2)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to insufficient digits")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.digits(2)))
+            }
         }
-    }
 
-    // Test special characters requirement
-    func testSpecialCharactersFailure() {
-        let requirements: PasswordPolicy = [.specialCharacters(2)]
-        let result = Validator.validate(password: "Password1!", against: requirements)
+        // Test special characters requirement
+        func testSpecialCharactersFailure() {
+            let requirements: PasswordPolicy = [.specialCharacters(2)]
+            let result = Validator.validate(password: "Password1!", against: requirements)
 
-        switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.specialCharacters(2)))
-        case .validPassword:
-            XCTFail("Password should be invalid due to insufficient special characters")
+            switch result {
+            case .success:
+                XCTFail("Password should be invalid due to insufficient special characters")
+
+            case let .failure(reason):
+                switch reason {
+                case let .invalidPassword(failures):
+                    XCTAssertEqual(failures.count, 1)
+                    XCTAssertTrue(failures.contains(.specialCharacters(2)))
+                }
+            }
         }
     }
 
@@ -112,11 +139,15 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "Pass word1!", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.noSpaces))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid due to space")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.noSpaces))
+            }
         }
     }
 
@@ -131,13 +162,17 @@ final class PasswordValidatorTests: XCTestCase {
         let result = Validator.validate(password: "pass1", against: requirements)
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 3)
-            XCTAssertTrue(failures.contains(.minLength(8)))
-            XCTAssertTrue(failures.contains(.uppercaseLetters(2)))
-            XCTAssertTrue(failures.contains(.digits(2)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 3)
+                XCTAssertTrue(failures.contains(.minLength(8)))
+                XCTAssertTrue(failures.contains(.uppercaseLetters(2)))
+                XCTAssertTrue(failures.contains(.digits(2)))
+            }
         }
     }
 
@@ -152,22 +187,23 @@ final class PasswordValidatorTests: XCTestCase {
         )
 
         switch result {
-        case let .invalidPassword(failures):
-            XCTAssertEqual(failures.count, 1)
-            XCTAssertTrue(failures.contains(.specialCharacters(1)))
-        case .validPassword:
+        case .success:
             XCTFail("Password should be invalid with custom special characters")
+
+        case let .failure(reason):
+            switch reason {
+            case let .invalidPassword(failures):
+                XCTAssertEqual(failures.count, 1)
+                XCTAssertTrue(failures.contains(.specialCharacters(1)))
+            }
         }
     }
 
     func testDefaultRequirements() {
         let result = Validator.validate(password: "Ashlesha@123")
-        switch result {
-        case .invalidPassword:
-            XCTFail("Password is valid with default requirements")
-
-        case .validPassword:
-            break
-        }
+        XCTAssertNoThrow(
+            try result.get(),
+            "Password is valid with default requirements"
+        )
     }
 }

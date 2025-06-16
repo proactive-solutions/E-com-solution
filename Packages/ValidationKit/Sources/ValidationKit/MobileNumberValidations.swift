@@ -7,20 +7,7 @@
 
 import PhoneNumberKit
 
-extension Validator.MobileNumberValidationResult: Mappable {}
-
-extension Validator.MobileNumberValidationResult: Equatable {
-    public static func == (
-        lhs: Validator.MobileNumberValidationResult,
-        rhs: Validator.MobileNumberValidationResult
-    ) -> Bool {
-        switch (lhs, rhs) {
-        case (.invalid, .invalid): true
-        case (.valid, .valid): true
-        default: false
-        }
-    }
-}
+extension Validator.MobileNumberValidationError: Mappable {}
 
 public extension Validator {
     /// Validates a mobile phone number string.
@@ -87,12 +74,12 @@ public extension Validator {
     /// ## Thread Safety
     ///
     /// This method is thread-safe and can be called from any queue.
-    static func validate(mobileNumber: String) -> Validator.MobileNumberValidationResult {
+    static func validate(mobileNumber: String) -> Result<Void, Validator.MobileNumberValidationError> {
         let utility = PhoneNumberUtility()
         return if utility.isValidPhoneNumber(mobileNumber) {
-            .valid
+            .success(())
         } else {
-            .invalid
+            .failure(.invalidMobileNumber)
         }
     }
 }
