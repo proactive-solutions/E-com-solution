@@ -15,10 +15,10 @@ struct LoginViewModelTests {
     // MARK: - Initialization Tests
     
     @Test("LoginViewModel initializes with all properties set to nil")
-    func initializesWithFailureProperties() {
-        #expect(viewModel.email == .failure(.validEmail))
-        #expect(viewModel.name == .failure(.validName))
-        #expect(viewModel.mobileNumber == .failure(.valid))
+    func initializesWithNilProperties() {
+        #expect(viewModel.email == nil)
+        #expect(viewModel.name == nil)
+        #expect(viewModel.mobileNumber == nil)
     }
     
     // MARK: - Email Validation Tests
@@ -62,8 +62,10 @@ struct LoginViewModelTests {
     mutating func settingValidPropertyAfterInvalidOneOverwritesSuccessfully() {
         // Set invalid first
         viewModel.set(email: "invalid-email")
-        #expect(viewModel.email == nil)
-        
+        if case .success = viewModel.email {
+            Issue.record("Expected '\(String(describing: viewModel.email))' to fail validation")
+        }
+
         // Set valid afterwards
         viewModel.set(email: "valid@email.com")
         #expect(viewModel.email != nil)
@@ -74,9 +76,11 @@ struct LoginViewModelTests {
         // Set valid first
         viewModel.set(name: "John")
         #expect(viewModel.name != nil)
-        
+
         // Attempt to set invalid
         viewModel.set(name: "")
-        #expect(viewModel.name == nil, "Valid name should not be preserved when invalid name is attempted to be set")
+        if case .success = viewModel.name {
+            Issue.record("Expected '\(String(describing: viewModel.name))' to fail validation")
+        }
     }
 }
