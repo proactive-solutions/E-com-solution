@@ -9,12 +9,12 @@ import Foundation
 import Models
 import ValidationKit
 
-struct LoginViewModel {
-    private(set) var email: Result<EmailAddress, Validator.EmailValidationError>?
-    private(set) var name: Result<Name, Validator.NameValidationError>?
-    private(set) var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
+final class LoginViewModel: ObservableObject {
+    @Published private(set) var email: Result<EmailAddress, Validator.EmailValidationError>?
+    @Published private(set) var name: Result<Name, Validator.NameValidationError>?
+    @Published private(set) var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
 
-    mutating func set(email: String) {
+    func set(email: String) {
         do {
             let _email = try EmailAddress(email)
             self.email = .success(_email)
@@ -26,7 +26,7 @@ struct LoginViewModel {
         }
     }
 
-    mutating func set(name: String) {
+    func set(name: String) {
         do {
             let _name = try Name(name)
             self.name = .success(_name)
@@ -38,7 +38,7 @@ struct LoginViewModel {
         }
     }
 
-    mutating func set(mobileNumber: String) {
+    func set(mobileNumber: String) {
         do {
             let _mobileNumber = try MobileNumber(mobileNumber)
             self.mobileNumber = .success(_mobileNumber)

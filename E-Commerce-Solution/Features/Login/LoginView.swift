@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @StateObject var loginVm = LoginViewModel()
     var body: some View {
         Text("Hello, World!")
     }
