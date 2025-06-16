@@ -26,9 +26,8 @@ final class MobileNumberValidationTests: XCTestCase {
         ]
 
         for number in validUSNumbers {
-            XCTAssertEqual(
-                Validator.validate(mobileNumber: number),
-                .valid,
+            XCTAssertNoThrow(
+                try Validator.validate(mobileNumber: number).get(),
                 "Expected '\(number)' to be valid"
             )
         }
@@ -45,9 +44,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in validUKNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .valid,
+            XCTAssertNoThrow(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be valid"
             )
         }
@@ -62,9 +60,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in validIndianNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .valid,
+            XCTAssertNoThrow(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be valid"
             )
         }
@@ -79,9 +76,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in validChineseNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .valid,
+            XCTAssertNoThrow(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be valid"
             )
         }
@@ -97,9 +93,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in validGermanNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .valid,
+            XCTAssertNoThrow(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be valid"
             )
         }
@@ -117,10 +112,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in validInternationalNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-
-            XCTAssertEqual(
-                result,
-                .valid,
+            XCTAssertNoThrow(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be valid"
             )
         }
@@ -138,10 +131,9 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in invalidNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
-                "Expected '\(phoneNumber)' to be invalid"
+            XCTAssertThrowsError(
+                try result.get(),
+                "Expected '\(phoneNumber)' to be valid"
             )
         }
     }
@@ -159,10 +151,9 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in invalidNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
-                "Expected '\(phoneNumber)' to be invalid"
+            XCTAssertThrowsError(
+                try result.get(),
+                "Expected '\(phoneNumber)' to be valid"
             )
         }
     }
@@ -179,10 +170,9 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in tooShortNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
-                "Expected '\(phoneNumber)' to be invalid"
+            XCTAssertThrowsError(
+                try result.get(),
+                "Expected '\(phoneNumber)' to be valid"
             )
         }
     }
@@ -196,9 +186,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in tooLongNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }
@@ -213,9 +202,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in invalidCountryCodeNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }
@@ -232,9 +220,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in malformedNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }
@@ -249,9 +236,8 @@ final class MobileNumberValidationTests: XCTestCase {
         for phoneNumber in numbersWithWhitespace {
             let result = Validator.validate(mobileNumber: phoneNumber)
             // Assuming the validator handles whitespace trimming
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }
@@ -266,9 +252,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in mixedSeparatorNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }
@@ -282,9 +267,8 @@ final class MobileNumberValidationTests: XCTestCase {
 
         for phoneNumber in specialCharNumbers {
             let result = Validator.validate(mobileNumber: phoneNumber)
-            XCTAssertEqual(
-                result,
-                .invalid,
+            XCTAssertThrowsError(
+                try result.get(),
                 "Expected '\(phoneNumber)' to be invalid"
             )
         }

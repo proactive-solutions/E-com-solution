@@ -6,7 +6,7 @@
 //
 import Foundation
 
-extension Validator.EmailValidationResult: Mappable {}
+extension Validator.EmailValidationError: Mappable {}
 
 public extension Validator {
     /// This validator checks if the provided string is a valid email address by:
@@ -20,19 +20,19 @@ public extension Validator {
     ///   - `.invalidEmailAddress`: The email string is not a valid email address
     static func validate(
         email: String
-    ) -> EmailValidationResult {
+    ) -> Result<Void, EmailValidationError> {
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if trimmedEmail.isEmpty {
-            return .empty
+            return .failure(.empty)
         }
 
         // Full RFC 5322 validation
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return if emailPredicate.evaluate(with: trimmedEmail) {
-            .validEmail
+            .success(())
         } else {
-            .invalidEmailAddress
+            .failure(.invalidEmailAddress)
         }
     }
 }

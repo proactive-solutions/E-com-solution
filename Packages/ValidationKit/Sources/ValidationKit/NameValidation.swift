@@ -7,17 +7,16 @@
 
 import Foundation
 
-extension Validator.NameValidationResult: Mappable {}
-extension Validator.NameValidationResult: Equatable {
+extension Validator.NameValidationError: Mappable {}
+extension Validator.NameValidationError: Equatable {
     public static func == (
-        lhs: Validator.NameValidationResult,
-        rhs: Validator.NameValidationResult
+        lhs: Validator.NameValidationError,
+        rhs: Validator.NameValidationError
     ) -> Bool {
         switch (lhs, rhs) {
         case let (.tooShort(len1), .tooShort(len2)): len1 == len2
         case let (.tooLong(len1), .tooLong(len2)): len1 == len2
         case (.invalidCharacters, .invalidCharacters): true
-        case (.validName, .validName): true
         default: false
         }
     }
@@ -54,23 +53,23 @@ public extension Validator {
         name: String,
         minLength: UInt = 3,
         maxLength: UInt = 30
-    ) -> NameValidationResult {
+    ) -> Result<Void, NameValidationError> {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedNameLength = trimmedName.count
 
         if trimmedNameLength < minLength {
-            return .tooShort(minimum: minLength)
+            return .failure(.tooShort(minimum: minLength))
         }
 
         if trimmedNameLength > maxLength {
-            return .tooLong(maximum: maxLength)
+            return .failure(.tooLong(maximum: maxLength))
         }
 
         let namePredicate = NSPredicate(format: "SELF MATCHES %@", nameRegex)
         return if namePredicate.evaluate(with: trimmedName) {
-            .validName
+            .success(())
         } else {
-            .invalidCharacters
+            .failure(.invalidCharacters)
         }
     }
 }
