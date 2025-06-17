@@ -13,8 +13,7 @@ struct E_Commerce_SolutionApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            LoginView()
         }
     }
 }
