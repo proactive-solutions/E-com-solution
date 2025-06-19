@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Login Header Component
+
 struct LoginHeaderView: View {
     var body: some View {
         VStack(spacing: 16) {

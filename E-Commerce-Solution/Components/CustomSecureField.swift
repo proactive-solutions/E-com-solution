@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Custom Secure Field Component
+
 struct CustomSecureField: View {
     let title: String
     @Binding var text: String

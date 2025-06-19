@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Social Login Component
+
 struct SocialLoginView: View {
     let onGoogleLogin: () -> Void
     let onAppleLogin: () -> Void

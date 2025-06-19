@@ -5,9 +5,12 @@
 //  Created by Pawan Sharma on 12/06/2025.
 //
 
+import Models
 import SwiftUI
+import ValidationKit
 
 // MARK: - Main Login View
+
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
 
@@ -20,16 +23,87 @@ struct LoginView: View {
                 // Toggle Section
                 LoginToggleView(selectedMode: $viewModel.selectedMode)
 
-                // Form Section
-                LoginFormView(
-                    email: $viewModel.email,
-                    password: $viewModel.password,
-                    isPasswordVisible: $viewModel.isPasswordVisible,
-                    validationError: viewModel.validationError,
-                    isLoading: viewModel.isLoading,
-                    onSignIn: viewModel.signIn,
-                    onForgotPassword: viewModel.forgotPassword
-                )
+                VStack(spacing: 20) {
+                    // Email Field
+                    CustomTextField(
+                        title: "Email Address",
+                        text: Binding(
+                            get: {
+                                guard let emailResult = viewModel.email else {
+                                    return ""
+                                }
+                                switch emailResult {
+                                case .success(let emailValue):
+                                    return emailValue.value
+                                case .failure:
+                                    return ""
+                                }
+                            }, set: { newTextInput in
+                                do {
+                                    let email = try Models.EmailAddress(newTextInput)
+                                    self.viewModel.email = .success(email)
+                                } catch let error as Validator.EmailValidationError {
+                                    self.viewModel.email = .failure(error)
+                                } catch { }
+                        }),
+                        placeholder: "Enter your email",
+                        keyboardType: .emailAddress,
+                        hasError: hasEmailError
+                    ) {
+                        Image(systemName: "envelope")
+                            .foregroundColor(.gray)
+                    }
+
+                    // Password Field
+                    CustomSecureField(
+                        title: "Password",
+                        text: Binding(
+                            get: {
+                                guard let passwordResult = viewModel.password else {
+                                    return ""
+                                }
+                                switch passwordResult {
+                                case .success(let passwordValue):
+                                    return passwordValue.value
+                                case .failure:
+                                    return ""
+                                }
+                            }, set: { newTextInput in
+                                do {
+                                    let password = try Models.Password(newTextInput)
+                                    self.viewModel.password = .success(password)
+                                } catch let error as Validator.PasswordValidationError {
+                                    self.viewModel.password = .failure(error)
+                                } catch { }
+                        }),
+                        placeholder: "Enter your password",
+                        isVisible: self.$viewModel.isPasswordVisible,
+                        hasError: hasPasswordError
+                    )
+
+                    // Error Message
+                    if let validationError = self.viewModel.validationError {
+                        ErrorMessageView(message: validationError)
+                    }
+
+                    // Forgot Password Link
+                    HStack {
+                        Spacer()
+                        Button(
+                            "Forgot Password?",
+                            action: {}
+                        )
+                        .font(.system(size: 14))
+                        .foregroundColor(.blue)
+                    }
+
+                    // Sign In Button
+                    PrimaryButton(
+                        title: "Sign In",
+                        isLoading: self.viewModel.isLoading,
+                        action: {}
+                    )
+                }
 
                 // Social Login Section
                 SocialLoginView(
@@ -45,101 +119,18 @@ struct LoginView: View {
         }
         .background(Color(.systemBackground))
     }
-}
 
-// MARK: - View Model
-@MainActor
-final class LoginViewModel: ObservableObject {
-    @Published var email = ""
-    @Published var password = ""
-    @Published var isPasswordVisible = false
-    @Published var selectedMode: LoginMode = .login
-    @Published var validationError: String?
-    @Published var isLoading = false
-
-    // MARK: - Pure Functions for Validation
-    private func validateEmail(_ email: String) -> ValidationResult {
-        func isValidEmailFormat(_ email: String) -> Bool {
-            let emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-            let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-            return emailPredicate.evaluate(with: email)
-        }
-
-        if email.isEmpty {
-            return .failure("Email is required")
-        } else if !isValidEmailFormat(email) {
-            return .failure("Invalid email format")
-        }
-        return .success
+    private var hasEmailError: Bool {
+        viewModel.validationError?.contains("email") == true
     }
 
-    private func validatePassword(_ password: String) -> ValidationResult {
-        if password.isEmpty {
-            return .failure("Password is required")
-        } else if password.count < 6 {
-            return .failure("Password must be at least 6 characters")
-        }
-        return .success
+    private var hasPasswordError: Bool {
+        viewModel.validationError?.contains("password") == true
     }
-
-    private func validateLoginForm(email: String, password: String) -> ValidationResult {
-        let emailValidation = validateEmail(email)
-        let passwordValidation = validatePassword(password)
-
-        if case .failure(let emailError) = emailValidation {
-            return .failure("Invalid email or password")
-        }
-
-        if case .failure(let passwordError) = passwordValidation {
-            return .failure("Invalid email or password")
-        }
-
-        return .success
-    }
-
-    // MARK: - Actions
-    func signIn() {
-        let validation = validateLoginForm(email: email, password: password)
-
-        switch validation {
-        case .failure(let error):
-            validationError = error
-        case .success:
-            performSignIn()
-        }
-    }
-
-    private func performSignIn() {
-        isLoading = true
-        validationError = nil
-
-        // Simulate network request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isLoading = false
-            // Handle sign in result
-        }
-    }
-
-    func forgotPassword() {
-        // Handle forgot password
-    }
-
-    func signInWithGoogle() {
-        // Handle Google sign in
-    }
-
-    func signInWithApple() {
-        // Handle Apple sign in
-    }
-}
-
-enum ValidationResult {
-    case success
-    case failure(String)
 }
 
 // MARK: - Preview
+
 #Preview {
     LoginView()
 }
-

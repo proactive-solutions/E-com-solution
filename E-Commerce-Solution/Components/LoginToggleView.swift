@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Login Toggle Component
+
 struct LoginToggleView: View {
     @Binding var selectedMode: LoginMode
 

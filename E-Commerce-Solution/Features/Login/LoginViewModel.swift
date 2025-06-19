@@ -10,18 +10,22 @@ import Models
 import ValidationKit
 
 // MARK: - Supporting Types
+
 enum LoginMode {
     case login
     case signUp
 }
 
-final class LoginViewModel_Original: ObservableObject {
-    @Published private(set) var email: Result<EmailAddress, Validator.EmailValidationError>?
-    @Published private(set) var name: Result<Name, Validator.NameValidationError>?
-    @Published private(set) var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
+@MainActor
+final class LoginViewModel: ObservableObject {
+    @Published var email: Result<EmailAddress, Validator.EmailValidationError>?
+    @Published var name: Result<Name, Validator.NameValidationError>?
+    @Published var password: Result<Password, Validator.PasswordValidationError>?
+    @Published var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
     @Published var isLoading = false
     @Published var isPasswordVisible = false
-    @Published var selectedMode: LoginMode = .login
+    @Published var selectedMode = LoginMode.login
+    @Published var validationError: String?
 
     func set(email: String) {
         do {
@@ -93,6 +97,7 @@ final class LoginViewModel_Original: ObservableObject {
     }
 
     // MARK: - Actions
+
     func signIn() {
         // TODO: Handle sign in
     }

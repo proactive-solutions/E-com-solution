@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Error Message Component
+
 struct ErrorMessageView: View {
     let message: String
 

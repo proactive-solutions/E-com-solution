@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Sign Up Link Component
+
 struct SignUpLinkView: View {
     var body: some View {
         HStack {

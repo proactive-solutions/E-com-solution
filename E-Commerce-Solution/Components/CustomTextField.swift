@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Custom Text Field Component
+
 struct CustomTextField<TrailingContent: View>: View {
     let title: String
     @Binding var text: String
@@ -25,7 +26,7 @@ struct CustomTextField<TrailingContent: View>: View {
         @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }
     ) {
         self.title = title
-        self._text = text
+        _text = text
         self.placeholder = placeholder
         self.keyboardType = keyboardType
         self.hasError = hasError

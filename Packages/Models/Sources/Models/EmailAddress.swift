@@ -7,7 +7,7 @@
 import ValidationKit
 
 public struct EmailAddress: Equatable {
-    public let value: String
+    public var value: String
 
     public init(_ value: String) throws {
         switch Validator.validate(email: value) {

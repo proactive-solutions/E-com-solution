@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Social Login Button Component
+
 struct SocialLoginButton<IconContent: View>: View {
     let title: String
     let icon: String
