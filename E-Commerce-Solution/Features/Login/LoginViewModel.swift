@@ -9,10 +9,19 @@ import Foundation
 import Models
 import ValidationKit
 
-final class LoginViewModel: ObservableObject {
+// MARK: - Supporting Types
+enum LoginMode {
+    case login
+    case signUp
+}
+
+final class LoginViewModel_Original: ObservableObject {
     @Published private(set) var email: Result<EmailAddress, Validator.EmailValidationError>?
     @Published private(set) var name: Result<Name, Validator.NameValidationError>?
     @Published private(set) var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
+    @Published var isLoading = false
+    @Published var isPasswordVisible = false
+    @Published var selectedMode: LoginMode = .login
 
     func set(email: String) {
         do {
@@ -81,5 +90,22 @@ final class LoginViewModel: ObservableObject {
         case .invalidMobileNumber:
             NSLocalizedString("Mobile number is invalid", comment: "")
         }
+    }
+
+    // MARK: - Actions
+    func signIn() {
+        // TODO: Handle sign in
+    }
+
+    func forgotPassword() {
+        // TODO: Handle forgot password
+    }
+
+    func signInWithGoogle() {
+        // TODO: Handle Google sign in
+    }
+
+    func signInWithApple() {
+        // TODO: Handle Apple sign in
     }
 }
