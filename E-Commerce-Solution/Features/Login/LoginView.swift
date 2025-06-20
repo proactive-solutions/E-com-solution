@@ -29,29 +29,25 @@ struct LoginView: View {
                         title: "Email Address",
                         text: Binding(
                             get: {
-                                guard let emailResult = viewModel.email else {
-                                    return ""
+                                guard let emailResult = viewModel.email else { return "" }
+                                return switch emailResult {
+                                case let .success(emailValue): emailValue.value
+                                case .failure: ""
                                 }
-                                switch emailResult {
-                                case .success(let emailValue):
-                                    return emailValue.value
-                                case .failure:
-                                    return ""
-                                }
-                            }, set: { newTextInput in
-                                do {
-                                    let email = try Models.EmailAddress(newTextInput)
-                                    self.viewModel.email = .success(email)
-                                } catch let error as Validator.EmailValidationError {
-                                    self.viewModel.email = .failure(error)
-                                } catch { }
-                        }),
+                            }, set: {
+                                viewModel.set(email: $0)
+                            }
+                        ),
                         placeholder: "Enter your email",
                         keyboardType: .emailAddress,
-                        hasError: hasEmailError
+                        hasError: viewModel.emailValidationError != nil
                     ) {
                         Image(systemName: "envelope")
                             .foregroundColor(.gray)
+                    }
+
+                    if let validationError = self.viewModel.emailValidationError {
+                        ErrorMessageView(message: validationError)
                     }
 
                     // Password Field
@@ -59,30 +55,22 @@ struct LoginView: View {
                         title: "Password",
                         text: Binding(
                             get: {
-                                guard let passwordResult = viewModel.password else {
-                                    return ""
+                                guard let passwordResult = viewModel.password else { return "" }
+                                return switch passwordResult {
+                                case let .success(passwordValue): passwordValue.value
+                                case .failure: ""
                                 }
-                                switch passwordResult {
-                                case .success(let passwordValue):
-                                    return passwordValue.value
-                                case .failure:
-                                    return ""
-                                }
-                            }, set: { newTextInput in
-                                do {
-                                    let password = try Models.Password(newTextInput)
-                                    self.viewModel.password = .success(password)
-                                } catch let error as Validator.PasswordValidationError {
-                                    self.viewModel.password = .failure(error)
-                                } catch { }
-                        }),
+                            }, set: {
+                                viewModel.set(password: $0)
+                            }
+                        ),
                         placeholder: "Enter your password",
-                        isVisible: self.$viewModel.isPasswordVisible,
-                        hasError: hasPasswordError
+                        isVisible: $viewModel.isPasswordVisible,
+                        hasError: viewModel.passwordValidationError != nil
                     )
 
                     // Error Message
-                    if let validationError = self.viewModel.validationError {
+                    if let validationError = self.viewModel.passwordValidationError {
                         ErrorMessageView(message: validationError)
                     }
 
@@ -118,14 +106,6 @@ struct LoginView: View {
             .padding(.vertical, 32)
         }
         .background(Color(.systemBackground))
-    }
-
-    private var hasEmailError: Bool {
-        viewModel.validationError?.contains("email") == true
-    }
-
-    private var hasPasswordError: Bool {
-        viewModel.validationError?.contains("password") == true
     }
 }
 

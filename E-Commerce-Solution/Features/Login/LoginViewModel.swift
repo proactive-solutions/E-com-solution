@@ -18,14 +18,57 @@ enum LoginMode {
 
 @MainActor
 final class LoginViewModel: ObservableObject {
-    @Published var email: Result<EmailAddress, Validator.EmailValidationError>?
-    @Published var name: Result<Name, Validator.NameValidationError>?
-    @Published var password: Result<Password, Validator.PasswordValidationError>?
-    @Published var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
+    @Published var email: Result<EmailAddress, Validator.EmailValidationError>? {
+        willSet {
+            switch newValue {
+            case .failure(let reason):
+                emailValidationError = emailErrorDescription(result: reason)
+            case .none, .some(.success):
+                emailValidationError = nil
+                break
+            }
+        }
+    }
+    @Published var name: Result<Name, Validator.NameValidationError>? {
+        willSet {
+            switch newValue {
+            case .failure(let reason):
+                nameValidationError = nameErrorDescription(result: reason)
+            case .none, .some(.success):
+                nameValidationError = nil
+                break
+            }
+        }
+    }
+    @Published var password: Result<Password, Validator.PasswordValidationError>? {
+        willSet {
+            switch newValue {
+            case .failure(let reason):
+                passwordValidationError = passwordErrorDescription(result: reason)
+            case .none, .some(.success):
+                passwordValidationError = nil
+                break
+            }
+        }
+    }
+    @Published var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>? {
+        willSet {
+            switch newValue {
+            case .failure(let reason):
+                mobileNumberValidationError = mobileErrorDescription(result: reason)
+            case .none, .some(.success):
+                mobileNumberValidationError = nil
+                break
+            }
+        }
+    }
     @Published var isLoading = false
     @Published var isPasswordVisible = false
     @Published var selectedMode = LoginMode.login
-    @Published var validationError: String?
+    @Published var emailValidationError: String?
+    @Published var passwordValidationError: String?
+    @Published var nameValidationError: String?
+    @Published var mobileNumberValidationError: String?
 
     func set(email: String) {
         do {
@@ -63,6 +106,18 @@ final class LoginViewModel: ObservableObject {
         }
     }
 
+    func set(password: String) {
+        do {
+            let _password = try Password(password)
+            self.password = .success(_password)
+        } catch let error as Validator.PasswordValidationError {
+            self.password = .failure(error)
+        } catch {
+            // TODO: Handle the error here for mobile number validation failure
+            print("Unknown Error: ", error.localizedDescription)
+        }
+    }
+
     func emailErrorDescription(
         result: Validator.EmailValidationError
     ) -> String {
@@ -93,6 +148,15 @@ final class LoginViewModel: ObservableObject {
         switch result {
         case .invalidMobileNumber:
             NSLocalizedString("Mobile number is invalid", comment: "")
+        }
+    }
+
+    func passwordErrorDescription(
+        result: Validator.PasswordValidationError
+    ) -> String {
+        switch result {
+        case .invalidPassword(let requirements):
+            NSLocalizedString(requirements.description, comment: "")
         }
     }
 
