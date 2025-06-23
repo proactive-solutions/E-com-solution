@@ -12,7 +12,7 @@ import ValidationKit
 // MARK: - Main Login View
 
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
+    @StateObject private var viewModel = LoginRegistrationViewModel()
 
     var body: some View {
         ScrollView {

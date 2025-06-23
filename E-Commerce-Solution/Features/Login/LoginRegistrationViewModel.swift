@@ -16,8 +16,7 @@ enum LoginMode {
     case signUp
 }
 
-@MainActor
-final class LoginViewModel: ObservableObject {
+final class LoginRegistrationViewModel: ObservableObject {
     @Published var email: Result<EmailAddress, Validator.EmailValidationError>? {
         willSet {
             switch newValue {
