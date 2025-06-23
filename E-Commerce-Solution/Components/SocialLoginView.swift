@@ -21,7 +21,7 @@ struct SocialLoginView: View {
 
             VStack(spacing: 12) {
                 SocialLoginButton(
-                    title: "Continue with Google",
+                    title: NSLocalizedString("Continue with Google", comment: ""),
                     icon: "G",
                     backgroundColor: .white,
                     foregroundColor: .black,
@@ -29,7 +29,7 @@ struct SocialLoginView: View {
                 )
 
                 SocialLoginButton(
-                    title: "Continue with Apple",
+                    title: NSLocalizedString("Continue with Apple", comment: ""),
                     icon: "",
                     backgroundColor: .white,
                     foregroundColor: .black,
@@ -42,4 +42,13 @@ struct SocialLoginView: View {
             }
         }
     }
+}
+
+#Preview {
+    SocialLoginView {
+
+    } onAppleLogin: {
+
+    }
+    .padding()
 }

@@ -26,3 +26,12 @@ struct ErrorMessageView: View {
         }
     }
 }
+
+#Preview {
+    VStack {
+        ErrorMessageView(message: "Email is empty")
+        ErrorMessageView(message: "Invalid mobile number")
+        ErrorMessageView(message: "Password is too short")
+    }
+    .padding()
+}

@@ -37,3 +37,7 @@ struct LoginHeaderView: View {
         }
     }
 }
+
+#Preview {
+    LoginHeaderView()
+}

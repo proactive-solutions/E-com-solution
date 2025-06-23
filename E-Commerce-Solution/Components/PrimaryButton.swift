@@ -36,3 +36,19 @@ struct PrimaryButton: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
+
+#Preview {
+    VStack {
+        PrimaryButton(
+            title: "Button",
+            isLoading: false,
+            action: {}
+        )
+        PrimaryButton(
+            title: "Button",
+            isLoading: true,
+            action: {}
+        )
+    }
+    .padding()
+}

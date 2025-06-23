@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Login Toggle Component
 
 struct LoginToggleView: View {
-    @Binding var selectedMode: LoginMode
+    @Binding var selectedMode: LoginRegistrationViewModel.Mode
 
     var body: some View {
         HStack(spacing: 0) {
@@ -50,4 +50,12 @@ struct LoginToggleView: View {
         }
         .buttonStyle(PlainButtonStyle())
     }
+}
+
+#Preview {
+    VStack {
+        LoginToggleView(selectedMode: .constant(.login))
+        LoginToggleView(selectedMode: .constant(.signUp))
+    }
+    .padding()
 }

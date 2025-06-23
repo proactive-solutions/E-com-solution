@@ -14,6 +14,8 @@ struct CustomTextField<TrailingContent: View>: View {
     @Binding var text: String
     let placeholder: String
     let keyboardType: UIKeyboardType
+    let autoCorrection: Bool
+    let autoCapitalization: TextInputAutocapitalization?
     let hasError: Bool
     @ViewBuilder let trailingContent: () -> TrailingContent
 
@@ -22,6 +24,8 @@ struct CustomTextField<TrailingContent: View>: View {
         text: Binding<String>,
         placeholder: String,
         keyboardType: UIKeyboardType = .default,
+        autoCorrection: Bool = false,
+        autoCapitalization: TextInputAutocapitalization? = nil,
         hasError: Bool = false,
         @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }
     ) {
@@ -29,6 +33,8 @@ struct CustomTextField<TrailingContent: View>: View {
         _text = text
         self.placeholder = placeholder
         self.keyboardType = keyboardType
+        self.autoCorrection = autoCorrection
+        self.autoCapitalization = autoCapitalization
         self.hasError = hasError
         self.trailingContent = trailingContent
     }
@@ -43,6 +49,8 @@ struct CustomTextField<TrailingContent: View>: View {
                 TextField(placeholder, text: $text)
                     .keyboardType(keyboardType)
                     .textFieldStyle(PlainTextFieldStyle())
+                    .autocorrectionDisabled(autoCorrection)
+                    .textInputAutocapitalization(autoCapitalization)
 
                 trailingContent()
             }

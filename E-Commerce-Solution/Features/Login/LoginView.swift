@@ -26,7 +26,7 @@ struct LoginView: View {
                 VStack(spacing: 20) {
                     // Email Field
                     CustomTextField(
-                        title: "Email Address",
+                        title: NSLocalizedString("Email Address", comment: ""),
                         text: Binding(
                             get: {
                                 guard let emailResult = viewModel.email else { return "" }
@@ -38,8 +38,10 @@ struct LoginView: View {
                                 viewModel.set(email: $0)
                             }
                         ),
-                        placeholder: "Enter your email",
+                        placeholder: NSLocalizedString("Enter your email", comment: ""),
                         keyboardType: .emailAddress,
+                        autoCorrection: false,
+                        autoCapitalization: .never,
                         hasError: viewModel.emailValidationError != nil
                     ) {
                         Image(systemName: "envelope")
@@ -52,7 +54,7 @@ struct LoginView: View {
 
                     // Password Field
                     CustomSecureField(
-                        title: "Password",
+                        title: NSLocalizedString("Password", comment: ""),
                         text: Binding(
                             get: {
                                 guard let passwordResult = viewModel.password else { return "" }
@@ -64,7 +66,7 @@ struct LoginView: View {
                                 viewModel.set(password: $0)
                             }
                         ),
-                        placeholder: "Enter your password",
+                        placeholder: NSLocalizedString("Enter your password", comment: ""),
                         isVisible: $viewModel.isPasswordVisible,
                         hasError: viewModel.passwordValidationError != nil
                     )
@@ -78,7 +80,7 @@ struct LoginView: View {
                     HStack {
                         Spacer()
                         Button(
-                            "Forgot Password?",
+                            NSLocalizedString("Forgot Password?", comment: ""),
                             action: {}
                         )
                         .font(.system(size: 14))
@@ -87,7 +89,7 @@ struct LoginView: View {
 
                     // Sign In Button
                     PrimaryButton(
-                        title: "Sign In",
+                        title: NSLocalizedString("Sign In", comment: ""),
                         isLoading: self.viewModel.isLoading,
                         action: {}
                     )

@@ -11,12 +11,11 @@ import ValidationKit
 
 // MARK: - Supporting Types
 
-enum LoginMode {
-    case login
-    case signUp
-}
-
 final class LoginRegistrationViewModel: ObservableObject {
+    enum Mode {
+        case login
+        case signUp
+    }
     @Published var email: Result<EmailAddress, Validator.EmailValidationError>? {
         willSet {
             switch newValue {
@@ -63,7 +62,7 @@ final class LoginRegistrationViewModel: ObservableObject {
     }
     @Published var isLoading = false
     @Published var isPasswordVisible = false
-    @Published var selectedMode = LoginMode.login
+    @Published var selectedMode = Mode.login
     @Published var emailValidationError: String?
     @Published var passwordValidationError: String?
     @Published var nameValidationError: String?
