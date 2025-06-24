@@ -1,4 +1,4 @@
-@testable import Models
+@testable import DataModels
 import Testing
 
 @Test func example() async throws {

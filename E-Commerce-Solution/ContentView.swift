@@ -6,7 +6,7 @@
 //
 
 import CoreData
-import Models
+import DataModels
 import SwiftUI
 
 struct ContentView: View {
