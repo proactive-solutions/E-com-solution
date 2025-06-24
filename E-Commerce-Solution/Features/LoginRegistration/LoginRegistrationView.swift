@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  LoginRegistrationView.swift
 //  E-Commerce-Solution
 //
 //  Created by Pawan Sharma on 12/06/2025.
@@ -11,7 +11,7 @@ import ValidationKit
 
 // MARK: - Main Login View
 
-struct LoginView: View {
+struct LoginRegistrationView: View {
     @StateObject private var viewModel = LoginRegistrationViewModel()
 
     var body: some View {
@@ -27,17 +27,7 @@ struct LoginView: View {
                     // Email Field
                     CustomTextField(
                         title: "Email Address",
-                        text: Binding(
-                            get: {
-                                guard let emailResult = viewModel.email else { return "" }
-                                return switch emailResult {
-                                case let .success(emailValue): emailValue.value
-                                case .failure: ""
-                                }
-                            }, set: {
-                                viewModel.set(email: $0)
-                            }
-                        ),
+                        text: $viewModel.userEmail,
                         placeholder: "Enter your email",
                         keyboardType: .emailAddress,
                         autoCorrection: false,
@@ -55,17 +45,7 @@ struct LoginView: View {
                     // Password Field
                     CustomSecureField(
                         title: "Password",
-                        text: Binding(
-                            get: {
-                                guard let passwordResult = viewModel.password else { return "" }
-                                return switch passwordResult {
-                                case let .success(passwordValue): passwordValue.value
-                                case .failure: ""
-                                }
-                            }, set: {
-                                viewModel.set(password: $0)
-                            }
-                        ),
+                        text: $viewModel.userPassword,
                         placeholder: "Enter your password",
                         isVisible: $viewModel.isPasswordVisible,
                         hasError: viewModel.passwordValidationError != nil
@@ -114,5 +94,5 @@ struct LoginView: View {
 // MARK: - Preview
 
 #Preview {
-    LoginView()
+    LoginRegistrationView()
 }

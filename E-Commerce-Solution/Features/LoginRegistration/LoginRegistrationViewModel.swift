@@ -1,65 +1,27 @@
 //
-//  LoginViewModel.swift
+//  LoginRegistrationViewModel.swift
 //  E-Commerce-Solution
 //
 //  Created by Pawan Sharma on 12/06/2025.
 //
 
+import Combine
 import Foundation
 import Models
 import ValidationKit
-
-// MARK: - Supporting Types
 
 final class LoginRegistrationViewModel: ObservableObject {
     enum Mode {
         case login
         case signUp
     }
-    @Published var email: Result<EmailAddress, Validator.EmailValidationError>? {
-        willSet {
-            switch newValue {
-            case .failure(let reason):
-                emailValidationError = emailErrorDescription(result: reason)
-            case .none, .some(.success):
-                emailValidationError = nil
-                break
-            }
-        }
-    }
-    @Published var name: Result<Name, Validator.NameValidationError>? {
-        willSet {
-            switch newValue {
-            case .failure(let reason):
-                nameValidationError = nameErrorDescription(result: reason)
-            case .none, .some(.success):
-                nameValidationError = nil
-                break
-            }
-        }
-    }
-    @Published var password: Result<Password, Validator.PasswordValidationError>? {
-        willSet {
-            switch newValue {
-            case .failure(let reason):
-                passwordValidationError = passwordErrorDescription(result: reason)
-            case .none, .some(.success):
-                passwordValidationError = nil
-                break
-            }
-        }
-    }
-    @Published var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>? {
-        willSet {
-            switch newValue {
-            case .failure(let reason):
-                mobileNumberValidationError = mobileErrorDescription(result: reason)
-            case .none, .some(.success):
-                mobileNumberValidationError = nil
-                break
-            }
-        }
-    }
+
+    // MARK: Published properties
+
+    @Published var userEmail = ""
+    @Published var userPassword = ""
+    @Published var userMobileNumber = ""
+    @Published var userName = ""
     @Published var isLoading = false
     @Published var isPasswordVisible = false
     @Published var selectedMode = Mode.login
@@ -68,52 +30,122 @@ final class LoginRegistrationViewModel: ObservableObject {
     @Published var nameValidationError: String?
     @Published var mobileNumberValidationError: String?
 
-    func set(email: String) {
-        do {
-            let _email = try EmailAddress(email)
-            self.email = .success(_email)
-        } catch let error as Validator.EmailValidationError {
-            // TODO: Handle the error here for email validation failure
-            self.email = .failure(error)
-        } catch {
-            print("Unknown Error: ", error.localizedDescription)
-        }
-    }
+    // MARK: Private properties
 
-    func set(name: String) {
-        do {
-            let _name = try Name(name)
-            self.name = .success(_name)
-        } catch let error as Validator.NameValidationError {
-            // TODO: Handle the error here for Name validation failure
-            self.name = .failure(error)
-        } catch {
-            print("Unknown Error: ", error.localizedDescription)
-        }
-    }
+    private var email: Result<EmailAddress, Validator.EmailValidationError>?
+    private var name: Result<Name, Validator.NameValidationError>?
+    private var password: Result<Password, Validator.PasswordValidationError>?
+    private var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
 
-    func set(mobileNumber: String) {
-        do {
-            let _mobileNumber = try MobileNumber(mobileNumber)
-            self.mobileNumber = .success(_mobileNumber)
-        } catch let error as Validator.MobileNumberValidationError {
-            self.mobileNumber = .failure(error)
-        } catch {
-            // TODO: Handle the error here for mobile number validation failure
-            print("Unknown Error: ", error.localizedDescription)
-        }
-    }
+    private var cancellables = Set<AnyCancellable>()
 
-    func set(password: String) {
-        do {
-            let _password = try Password(password)
-            self.password = .success(_password)
-        } catch let error as Validator.PasswordValidationError {
-            self.password = .failure(error)
-        } catch {
-            // TODO: Handle the error here for mobile number validation failure
-            print("Unknown Error: ", error.localizedDescription)
-        }
+    init() {
+        let emailSub = $userEmail
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .dropFirst()
+            .compactMap { t -> Result<Models.EmailAddress, Validator.EmailValidationError>? in
+                do {
+                    let e = try Models.EmailAddress(t)
+                    return .success(e)
+                } catch let error as Validator.EmailValidationError {
+                    return .failure(error)
+                } catch {
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+            .sink { [weak self] result in
+                guard let self else { return }
+                self.email = result
+                if case let .failure(reason) = self.email {
+                    emailValidationError = self.emailErrorDescription(result: reason)
+                } else {
+                    emailValidationError = nil
+                }
+            }
+
+        cancellables.insert(emailSub)
+
+        let passwordSub = $userPassword
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .dropFirst()
+            .compactMap { t -> Result<Models.Password, Validator.PasswordValidationError>? in
+                do {
+                    let e = try Models.Password(t)
+                    return .success(e)
+                } catch let error as Validator.PasswordValidationError {
+                    return .failure(error)
+                } catch {
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+            .sink { [weak self] result in
+                guard let self else { return }
+                self.password = result
+                if case let .failure(reason) = self.password {
+                    passwordValidationError = self.passwordErrorDescription(result: reason)
+                } else {
+                    passwordValidationError = nil
+                }
+            }
+        cancellables.insert(passwordSub)
+
+        let userNameSub = $userName
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .dropFirst()
+            .compactMap { t -> Result<Models.Name, Validator.NameValidationError>? in
+                do {
+                    let e = try Models.Name(t)
+                    return .success(e)
+                } catch let error as Validator.NameValidationError {
+                    return .failure(error)
+                } catch {
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+            .sink { [weak self] result in
+                guard let self else { return }
+                self.name = result
+                if case let .failure(reason) = self.name {
+                    nameValidationError = self.nameErrorDescription(result: reason)
+                } else {
+                    nameValidationError = nil
+                }
+            }
+
+        cancellables.insert(userNameSub)
+
+        let userMobileSub = $userMobileNumber
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .dropFirst()
+            .eraseToAnyPublisher()
+            .compactMap { t -> Result<Models.MobileNumber, Validator.MobileNumberValidationError>? in
+                do {
+                    let e = try Models.MobileNumber(t)
+                    return .success(e)
+                } catch let error as Validator.MobileNumberValidationError {
+                    return .failure(error)
+                } catch {
+                    return nil
+                }
+            }
+            .sink { [weak self] result in
+                guard let self else { return }
+                self.mobileNumber = result
+                if case let .failure(reason) = self.mobileNumber {
+                    mobileNumberValidationError = self.mobileErrorDescription(result: reason)
+                } else {
+                    mobileNumberValidationError = nil
+                }
+            }
+
+        cancellables.insert(userMobileSub)
     }
 
     func emailErrorDescription(
@@ -153,7 +185,7 @@ final class LoginRegistrationViewModel: ObservableObject {
         result: Validator.PasswordValidationError
     ) -> String {
         switch result {
-        case .invalidPassword(let requirements):
+        case let .invalidPassword(requirements):
             NSLocalizedString(requirements.description, comment: "")
         }
     }
@@ -173,6 +205,8 @@ final class LoginRegistrationViewModel: ObservableObject {
     }
 
     func signInWithApple() {
-        // TODO: Handle Apple sign in
+        // TODO: Handle Apple sign in.
+        // This is not supported at the moment, and this action should trigger an alert
+        // for notifying the user.
     }
 }
