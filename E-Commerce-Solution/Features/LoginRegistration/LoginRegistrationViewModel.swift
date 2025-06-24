@@ -7,7 +7,7 @@
 
 import Combine
 import Foundation
-import Models
+import DataModels
 import ValidationKit
 
 final class LoginRegistrationViewModel: ObservableObject {
@@ -39,6 +39,8 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private lazy var authenticationService = AuthenticationService()
+
     init() {
         validateEmailInput()
         validatePasswordInput()
@@ -51,9 +53,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst()
-            .compactMap { t -> Result<Models.EmailAddress, Validator.EmailValidationError>? in
+            .compactMap { t -> Result<DataModels.EmailAddress, Validator.EmailValidationError>? in
                 do {
-                    let e = try Models.EmailAddress(t)
+                    let e = try DataModels.EmailAddress(t)
                     return .success(e)
                 } catch let error as Validator.EmailValidationError {
                     return .failure(error)
@@ -80,9 +82,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst()
-            .compactMap { t -> Result<Models.Password, Validator.PasswordValidationError>? in
+            .compactMap { t -> Result<DataModels.Password, Validator.PasswordValidationError>? in
                 do {
-                    let e = try Models.Password(t)
+                    let e = try DataModels.Password(t)
                     return .success(e)
                 } catch let error as Validator.PasswordValidationError {
                     return .failure(error)
@@ -108,9 +110,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst()
-            .compactMap { t -> Result<Models.Name, Validator.NameValidationError>? in
+            .compactMap { t -> Result<DataModels.Name, Validator.NameValidationError>? in
                 do {
-                    let e = try Models.Name(t)
+                    let e = try DataModels.Name(t)
                     return .success(e)
                 } catch let error as Validator.NameValidationError {
                     return .failure(error)
@@ -138,9 +140,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             .removeDuplicates()
             .dropFirst()
             .eraseToAnyPublisher()
-            .compactMap { t -> Result<Models.MobileNumber, Validator.MobileNumberValidationError>? in
+            .compactMap { t -> Result<DataModels.MobileNumber, Validator.MobileNumberValidationError>? in
                 do {
-                    let e = try Models.MobileNumber(t)
+                    let e = try DataModels.MobileNumber(t)
                     return .success(e)
                 } catch let error as Validator.MobileNumberValidationError {
                     return .failure(error)
@@ -216,6 +218,8 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     func signInWithGoogle() {
         // TODO: Handle Google sign in
+        // This is not supported at the moment, and this action should trigger an alert
+        // for notifying the user.
     }
 
     func signInWithApple() {

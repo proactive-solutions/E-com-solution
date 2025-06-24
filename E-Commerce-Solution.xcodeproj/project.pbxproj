@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F24B7B422E0AC5C0005A7BDB /* DataModels in Frameworks */ = {isa = PBXBuildFile; productRef = F24B7B412E0AC5C0005A7BDB /* DataModels */; };
 		F2B350DE2E097BEB00E36157 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F2B350DD2E097BEB00E36157 /* FirebaseAuth */; };
 		F2B350E02E097BEB00E36157 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F2B350DF2E097BEB00E36157 /* FirebaseCore */; };
 		F2D551922DFACB6E003841BA /* ValidationKit in Frameworks */ = {isa = PBXBuildFile; productRef = F2D551912DFACB6E003841BA /* ValidationKit */; };
-		F2D551952DFACC6D003841BA /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = F2D551942DFACC6D003841BA /* Models */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2D551952DFACC6D003841BA /* Models in Frameworks */,
+				F24B7B422E0AC5C0005A7BDB /* DataModels in Frameworks */,
 				F2B350DE2E097BEB00E36157 /* FirebaseAuth in Frameworks */,
 				F2B350E02E097BEB00E36157 /* FirebaseCore in Frameworks */,
 				F2D551922DFACB6E003841BA /* ValidationKit in Frameworks */,
@@ -126,9 +126,9 @@
 			name = "E-Commerce-Solution";
 			packageProductDependencies = (
 				F2D551912DFACB6E003841BA /* ValidationKit */,
-				F2D551942DFACC6D003841BA /* Models */,
 				F2B350DD2E097BEB00E36157 /* FirebaseAuth */,
 				F2B350DF2E097BEB00E36157 /* FirebaseCore */,
+				F24B7B412E0AC5C0005A7BDB /* DataModels */,
 			);
 			productName = "E-Commerce-Solution";
 			productReference = F2D5515E2DFAC728003841BA /* E-Commerce-Solution.app */;
@@ -214,8 +214,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F2D551902DFACB6E003841BA /* XCLocalSwiftPackageReference "Packages/ValidationKit" */,
-				F2D551932DFACC6D003841BA /* XCLocalSwiftPackageReference "Packages/Models" */,
 				F2B350DC2E097BEB00E36157 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				F24B7B402E0AC5C0005A7BDB /* XCLocalSwiftPackageReference "Packages/DataModels" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2D5515F2DFAC728003841BA /* Products */;
@@ -598,13 +598,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		F24B7B402E0AC5C0005A7BDB /* XCLocalSwiftPackageReference "Packages/DataModels" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/DataModels;
+		};
 		F2D551902DFACB6E003841BA /* XCLocalSwiftPackageReference "Packages/ValidationKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/ValidationKit;
-		};
-		F2D551932DFACC6D003841BA /* XCLocalSwiftPackageReference "Packages/Models" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Models;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -620,6 +620,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F24B7B412E0AC5C0005A7BDB /* DataModels */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataModels;
+		};
 		F2B350DD2E097BEB00E36157 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F2B350DC2E097BEB00E36157 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -633,10 +637,6 @@
 		F2D551912DFACB6E003841BA /* ValidationKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ValidationKit;
-		};
-		F2D551942DFACC6D003841BA /* Models */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Models;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

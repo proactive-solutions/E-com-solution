@@ -5,7 +5,7 @@
 //  Created by Pawan Sharma on 12/06/2025.
 //
 
-import Models
+import DataModels
 import SwiftUI
 import ValidationKit
 
