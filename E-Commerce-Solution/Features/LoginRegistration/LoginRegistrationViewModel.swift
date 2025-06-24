@@ -40,6 +40,13 @@ final class LoginRegistrationViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
+        validateEmailInput()
+        validatePasswordInput()
+        validateNameInput()
+        validateMobileNumberInput()
+    }
+
+    fileprivate func validateEmailInput() {
         let emailSub = $userEmail
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -66,7 +73,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             }
 
         cancellables.insert(emailSub)
+    }
 
+    fileprivate func validatePasswordInput() {
         let passwordSub = $userPassword
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -92,7 +101,9 @@ final class LoginRegistrationViewModel: ObservableObject {
                 }
             }
         cancellables.insert(passwordSub)
+    }
 
+    fileprivate func validateNameInput() {
         let userNameSub = $userName
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -119,7 +130,9 @@ final class LoginRegistrationViewModel: ObservableObject {
             }
 
         cancellables.insert(userNameSub)
+    }
 
+    fileprivate func validateMobileNumberInput() {
         let userMobileSub = $userMobileNumber
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -147,6 +160,7 @@ final class LoginRegistrationViewModel: ObservableObject {
 
         cancellables.insert(userMobileSub)
     }
+
 
     func emailErrorDescription(
         result: Validator.EmailValidationError
