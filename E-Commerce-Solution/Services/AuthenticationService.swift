@@ -6,10 +6,11 @@
 //
 
 import DataModels
-import FirebaseAuth
+@preconcurrency import FirebaseAuth
 import FirebaseCore
 import SwiftUI
 
+@MainActor
 final class AuthenticationService: ObservableObject {
     @Published var user: User?
     @Published var isAuthenticated = false
@@ -22,7 +23,9 @@ final class AuthenticationService: ObservableObject {
     }
 
     deinit {
-        removeAuthStateListener()
+        MainActor.assumeIsolated {
+            removeAuthStateListener()
+        }
     }
 
     // MARK: - Private Methods
@@ -60,14 +63,22 @@ final class AuthenticationService: ObservableObject {
 
     // MARK: - Public Authentication Methods
 
-    func signUp(email: DataModels.EmailAddress, password: DataModels.Password) async {
+    func signUp(
+        email: DataModels.EmailAddress,
+        password: DataModels.Password,
+        name: DataModels.Name
+    ) async {
         do {
             let result = try await Auth.auth().createUser(
                 withEmail: email.value,
-                password: password.value
+                password:  password.value
             )
             user = result.user
             errorMessage = nil
+            // Update the user profile with display name
+            let changeRequest = result.user.createProfileChangeRequest()
+            changeRequest.displayName = name.value
+            try await changeRequest.commitChanges()
         } catch {
             handleAuthError(error)
         }
