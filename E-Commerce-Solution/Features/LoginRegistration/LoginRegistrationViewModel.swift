@@ -10,9 +10,7 @@ import DataModels
 import Foundation
 import ValidationKit
 
-// FIXME: Figure out how to fix this issue without use of `@unchecked Sendable { }`
-extension LoginRegistrationViewModel: @unchecked Sendable {}
-
+@MainActor
 final class LoginRegistrationViewModel: ObservableObject {
     enum Mode {
         case login
@@ -31,14 +29,12 @@ final class LoginRegistrationViewModel: ObservableObject {
     @Published var emailValidationError: String?
     @Published var passwordValidationError: String?
     @Published var nameValidationError: String?
-    @Published var mobileNumberValidationError: String?
 
     // MARK: Private properties
 
     private var email: Result<EmailAddress, Validator.EmailValidationError>?
     private var name: Result<Name, Validator.NameValidationError>?
     private var password: Result<Password, Validator.PasswordValidationError>?
-    private var mobileNumber: Result<MobileNumber, Validator.MobileNumberValidationError>?
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -48,7 +44,6 @@ final class LoginRegistrationViewModel: ObservableObject {
         validateEmailInput()
         validatePasswordInput()
         validateNameInput()
-        validateMobileNumberInput()
     }
 
     fileprivate func validateEmailInput() {
@@ -137,35 +132,6 @@ final class LoginRegistrationViewModel: ObservableObject {
         cancellables.insert(userNameSub)
     }
 
-    fileprivate func validateMobileNumberInput() {
-        let userMobileSub = $userMobileNumber
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .dropFirst()
-            .eraseToAnyPublisher()
-            .compactMap { t -> Result<DataModels.MobileNumber, Validator.MobileNumberValidationError>? in
-                do {
-                    let e = try DataModels.MobileNumber(t)
-                    return .success(e)
-                } catch let error as Validator.MobileNumberValidationError {
-                    return .failure(error)
-                } catch {
-                    return nil
-                }
-            }
-            .sink { [weak self] result in
-                guard let self else { return }
-                self.mobileNumber = result
-                if case let .failure(reason) = self.mobileNumber {
-                    mobileNumberValidationError = self.mobileErrorDescription(result: reason)
-                } else {
-                    mobileNumberValidationError = nil
-                }
-            }
-
-        cancellables.insert(userMobileSub)
-    }
-
     func emailErrorDescription(
         result: Validator.EmailValidationError
     ) -> String {
@@ -213,7 +179,8 @@ final class LoginRegistrationViewModel: ObservableObject {
     func signIn() {
         Task { [weak self] in
             guard let self else { return }
-            // TODO: Handle sign in
+            self.isLoading = true
+            defer { self.isLoading = false }
             guard let email = self.email, let password = self.password else { return }
             // Need to proceed in case of valid email, and password only.
             // For any other case authentication cannot be done.
@@ -231,6 +198,28 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     func signup() {
         // TODO: Handle sign up
+        Task { [weak self] in
+            guard
+                let self,
+                let email = self.email,
+                let password = self.password,
+                let name = self.name
+            else { return }
+            self.isLoading = true
+            defer { self.isLoading = false }
+            // Need to proceed in case of valid email, and password only.
+            // For any other case authentication cannot be done.
+            switch (email, password, name) {
+            case let (.success(email), .success(pass), .success(name)):
+                await self.authenticationService.signUp(
+                    email: email,
+                    password: pass,
+                    name: name
+                )
+            default:
+                return
+            }
+        }
     }
 
     func forgotPassword() {

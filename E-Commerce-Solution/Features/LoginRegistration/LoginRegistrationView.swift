@@ -60,7 +60,7 @@ struct LoginRegistrationView: View {
                         // Name field
                         CustomTextField(
                             title: "Name",
-                            text: $viewModel.userEmail,
+                            text: $viewModel.userName,
                             placeholder: "Enter your full name",
                             keyboardType: .emailAddress,
                             autoCorrection: false,
@@ -71,25 +71,7 @@ struct LoginRegistrationView: View {
                                 .foregroundColor(.gray)
                         }
 
-                        if let validationError = self.viewModel.emailValidationError {
-                            ErrorMessageView(message: validationError)
-                        }
-
-                        // Mobile Number field
-                        CustomTextField(
-                            title: "Mobile number",
-                            text: $viewModel.userEmail,
-                            placeholder: "Enter your mobile number",
-                            keyboardType: .emailAddress,
-                            autoCorrection: false,
-                            autoCapitalization: .never,
-                            hasError: viewModel.emailValidationError != nil
-                        ) {
-                            Image(systemName: "phone")
-                                .foregroundColor(.gray)
-                        }
-
-                        if let validationError = self.viewModel.emailValidationError {
+                        if let validationError = self.viewModel.nameValidationError {
                             ErrorMessageView(message: validationError)
                         }
                     }
@@ -105,12 +87,22 @@ struct LoginRegistrationView: View {
                         .foregroundColor(.blue)
                     }
 
-                    // Sign In Button
-                    PrimaryButton(
-                        title: "Sign In",
-                        isLoading: viewModel.isLoading,
-                        action: viewModel.signIn
-                    )
+                    if self.viewModel.selectedMode == .signUp {
+                        PrimaryButton(
+                            title: "Sign Up",
+                            isLoading: viewModel.isLoading,
+                            action: viewModel.signup
+                        )
+                    }
+
+                    if self.viewModel.selectedMode == .login {
+                        // Sign In Button
+                        PrimaryButton(
+                            title: "Sign In",
+                            isLoading: viewModel.isLoading,
+                            action: viewModel.signIn
+                        )
+                    }
                 }
 
                 // Social Login Section
