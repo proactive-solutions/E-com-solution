@@ -6,9 +6,12 @@
 //
 
 import Combine
-import Foundation
 import DataModels
+import Foundation
 import ValidationKit
+
+// FIXME: Figure out how to fix this issue without use of `@unchecked Sendable { }`
+extension LoginRegistrationViewModel: @unchecked Sendable {}
 
 final class LoginRegistrationViewModel: ObservableObject {
     enum Mode {
@@ -163,7 +166,6 @@ final class LoginRegistrationViewModel: ObservableObject {
         cancellables.insert(userMobileSub)
     }
 
-
     func emailErrorDescription(
         result: Validator.EmailValidationError
     ) -> String {
@@ -209,7 +211,26 @@ final class LoginRegistrationViewModel: ObservableObject {
     // MARK: - Actions
 
     func signIn() {
-        // TODO: Handle sign in
+        Task { [weak self] in
+            guard let self else { return }
+            // TODO: Handle sign in
+            guard let email = self.email, let password = self.password else { return }
+            // Need to proceed in case of valid email, and password only.
+            // For any other case authentication cannot be done.
+            switch (email, password) {
+            case let (.success(email), .success(pass)):
+                await self.authenticationService.signIn(
+                    email: email,
+                    password: pass
+                )
+            default:
+                return
+            }
+        }
+    }
+
+    func signup() {
+        // TODO: Handle sign up
     }
 
     func forgotPassword() {

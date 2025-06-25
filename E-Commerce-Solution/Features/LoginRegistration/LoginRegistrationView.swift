@@ -56,6 +56,44 @@ struct LoginRegistrationView: View {
                         ErrorMessageView(message: validationError)
                     }
 
+                    if self.viewModel.selectedMode == .signUp {
+                        // Name field
+                        CustomTextField(
+                            title: "Name",
+                            text: $viewModel.userEmail,
+                            placeholder: "Enter your full name",
+                            keyboardType: .emailAddress,
+                            autoCorrection: false,
+                            autoCapitalization: .never,
+                            hasError: viewModel.emailValidationError != nil
+                        ) {
+                            Image(systemName: "pencil.circle")
+                                .foregroundColor(.gray)
+                        }
+
+                        if let validationError = self.viewModel.emailValidationError {
+                            ErrorMessageView(message: validationError)
+                        }
+
+                        // Mobile Number field
+                        CustomTextField(
+                            title: "Mobile number",
+                            text: $viewModel.userEmail,
+                            placeholder: "Enter your mobile number",
+                            keyboardType: .emailAddress,
+                            autoCorrection: false,
+                            autoCapitalization: .never,
+                            hasError: viewModel.emailValidationError != nil
+                        ) {
+                            Image(systemName: "phone")
+                                .foregroundColor(.gray)
+                        }
+
+                        if let validationError = self.viewModel.emailValidationError {
+                            ErrorMessageView(message: validationError)
+                        }
+                    }
+
                     // Forgot Password Link
                     HStack {
                         Spacer()
@@ -70,8 +108,8 @@ struct LoginRegistrationView: View {
                     // Sign In Button
                     PrimaryButton(
                         title: "Sign In",
-                        isLoading: self.viewModel.isLoading,
-                        action: {}
+                        isLoading: viewModel.isLoading,
+                        action: viewModel.signIn
                     )
                 }
 
