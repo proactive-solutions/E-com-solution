@@ -45,10 +45,6 @@ struct SocialLoginView: View {
 }
 
 #Preview {
-    SocialLoginView {
-
-    } onAppleLogin: {
-
-    }
-    .padding()
+    SocialLoginView {} onAppleLogin: {}
+        .padding()
 }

@@ -5,15 +5,15 @@
 //  Created by Pawan Sharma on 24/06/2025.
 //
 
+import DataModels
 import FirebaseAuth
 import FirebaseCore
 import SwiftUI
-import DataModels
 
 final class AuthenticationService: ObservableObject {
     @Published var user: User?
     @Published var isAuthenticated = false
-    @Published var errorMessage = ""
+    @Published var errorMessage: String?
 
     private var authStateListener: AuthStateDidChangeListenerHandle?
 
@@ -60,21 +60,27 @@ final class AuthenticationService: ObservableObject {
 
     // MARK: - Public Authentication Methods
 
-    func signUp(email: String, password: String) async {
+    func signUp(email: DataModels.EmailAddress, password: DataModels.Password) async {
         do {
-            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            let result = try await Auth.auth().createUser(
+                withEmail: email.value,
+                password: password.value
+            )
             user = result.user
-            errorMessage = ""
+            errorMessage = nil
         } catch {
             handleAuthError(error)
         }
     }
 
-    func signIn(email: String, password: String) async {
+    func signIn(email: DataModels.EmailAddress, password: DataModels.Password) async {
         do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            let result = try await Auth.auth().signIn(
+                withEmail: email.value,
+                password: password.value
+            )
             user = result.user
-            errorMessage = ""
+            errorMessage = nil
         } catch {
             handleAuthError(error)
         }
@@ -83,15 +89,15 @@ final class AuthenticationService: ObservableObject {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            errorMessage = ""
+            errorMessage = nil
         } catch {
             handleAuthError(error)
         }
     }
 
-    func resetPassword(email: String) async {
+    func resetPassword(email: DataModels.EmailAddress) async {
         do {
-            try await Auth.auth().sendPasswordReset(withEmail: email)
+            try await Auth.auth().sendPasswordReset(withEmail: email.value)
             errorMessage = "Password reset email sent"
         } catch {
             handleAuthError(error)
@@ -103,7 +109,7 @@ final class AuthenticationService: ObservableObject {
 
         do {
             try await currentUser.delete()
-            errorMessage = ""
+            errorMessage = nil
         } catch {
             handleAuthError(error)
         }
