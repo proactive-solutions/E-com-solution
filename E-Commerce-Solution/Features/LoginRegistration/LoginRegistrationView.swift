@@ -102,6 +102,23 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: viewModel.signIn
                         )
+                        .alert(isPresented: Binding(
+                            get: {
+                                guard let _ = viewModel.authenticationService.errorMessage else { return false }
+                                return true
+                            },
+                            set: { value in
+                                viewModel.authenticationService.errorMessage = value
+                                    ? viewModel.authenticationService.errorMessage
+                                    : nil
+                            }
+                        )) {
+                            Alert(
+                                title: Text("Attention"),
+                                message: Text(viewModel.authenticationService.errorMessage ?? "Unknown error!"),
+                                dismissButton: .default(Text("Ok"))
+                            )
+                        }
                     }
                 }
 
@@ -110,9 +127,6 @@ struct LoginRegistrationView: View {
                     onGoogleLogin: viewModel.signInWithGoogle,
                     onAppleLogin: viewModel.signInWithApple
                 )
-
-                // Sign Up Link
-                SignUpLinkView()
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 32)
