@@ -38,7 +38,7 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private lazy var authenticationService = AuthenticationService()
+    lazy var authenticationService = AuthenticationService()
 
     init() {
         validateEmailInput()
@@ -197,7 +197,6 @@ final class LoginRegistrationViewModel: ObservableObject {
     }
 
     func signup() {
-        // TODO: Handle sign up
         Task { [weak self] in
             guard
                 let self,

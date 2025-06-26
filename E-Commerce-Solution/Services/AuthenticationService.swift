@@ -71,7 +71,7 @@ final class AuthenticationService: ObservableObject {
         do {
             let result = try await Auth.auth().createUser(
                 withEmail: email.value,
-                password:  password.value
+                password: password.value
             )
             user = result.user
             errorMessage = nil
