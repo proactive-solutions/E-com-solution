@@ -93,6 +93,23 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: viewModel.signup
                         )
+                        .alert(isPresented: Binding(
+                            get: {
+                                guard let _ = viewModel.authenticationService.errorMessage else { return false }
+                                return true
+                            },
+                            set: { value in
+                                viewModel.authenticationService.errorMessage = value
+                                    ? viewModel.authenticationService.errorMessage
+                                    : nil
+                            }
+                        )) {
+                            Alert(
+                                title: Text("Attention"),
+                                message: Text(viewModel.authenticationService.errorMessage ?? "Unknown error!"),
+                                dismissButton: .default(Text("Ok"))
+                            )
+                        }
                     }
 
                     if self.viewModel.selectedMode == .login {
