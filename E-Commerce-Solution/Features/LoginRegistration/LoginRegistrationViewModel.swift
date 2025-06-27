@@ -21,7 +21,6 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     @Published var userEmail = ""
     @Published var userPassword = ""
-    @Published var userMobileNumber = ""
     @Published var userName = ""
     @Published var isLoading = false
     @Published var isPasswordVisible = false

@@ -55,6 +55,8 @@ final class AuthenticationService: ObservableObject {
                 errorMessage = "User not found"
             case .wrongPassword:
                 errorMessage = "Incorrect password"
+            case .invalidCredential:
+                errorMessage = "Invalid login credentials provided"
             default:
                 errorMessage = authError.localizedDescription
             }

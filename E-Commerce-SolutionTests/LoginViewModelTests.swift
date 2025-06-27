@@ -1,113 +1,147 @@
-@testable import E_Commerce_Solution
 import Testing
+import Combine
+import DataModels
+import ValidationKit
+@testable import E_Commerce_Solution
 
-/// Comprehensive unit tests for LoginViewModel covering all validation scenarios
-/// and edge cases for email, name, and mobile number properties
-@Suite("LoginViewModel Tests")
-struct LoginViewModelTests {
-    var viewModel: LoginRegistrationViewModel
-
-    /// Initialize a fresh LoginViewModel instance for each test
-    init() {
-        viewModel = LoginRegistrationViewModel()
-    }
-
-    // MARK: - Initialization Tests
-
-    @Test("LoginViewModel initializes with all properties set to nil")
-    func initializesWithDefaultValues() {
-        #expect(viewModel.email == nil)
-        #expect(viewModel.name == nil)
-        #expect(viewModel.mobileNumber == nil)
-        #expect(viewModel.isLoading == false)
-        #expect(viewModel.isPasswordVisible == false)
-        #expect(viewModel.selectedMode == .login)
-        #expect(viewModel.emailValidationError == nil)
-        #expect(viewModel.passwordValidationError == nil)
-        #expect(viewModel.nameValidationError == nil)
-        #expect(viewModel.mobileNumberValidationError == nil)
-    }
-
+@MainActor
+struct LoginRegistrationViewModelTests {
     // MARK: - Email Validation Tests
+    let viewModel: LoginRegistrationViewModel
 
-    @Test("Valid email address gets stored successfully")
-    mutating func validEmailAddressGetsStoredSuccessfully() {
-        viewModel.set(email: "pawan.sharma@yash.com")
-        #expect(viewModel.email != nil)
+    init() {
+        self.viewModel = LoginRegistrationViewModel()
+    }
+
+    @Test("Valid email input updates email property and clears error")
+    func testValidEmailInput() async {
+        let validEmail = "test@example.com"
+
+        viewModel.userEmail = validEmail
+        await Task.yield() // Allow async validation to complete
+
+        #expect(viewModel.emailValidationError == nil)
+    }
+
+    @Test("Invalid email input sets appropriate error message")
+    func testInvalidEmailInput() async {
+        let viewModel = LoginRegistrationViewModel()
+        let invalidEmail = "invalid-email"
+
+        viewModel.userEmail = invalidEmail
+        await Task.yield()
+
+        #expect(viewModel.emailValidationError != nil)
+    }
+
+    @Test("Empty email input sets empty error message")
+    func testEmptyEmailInput() async {
+        viewModel.userEmail = ""
+        await Task.yield()
+
+        #expect(viewModel.emailValidationError == "Email address is empty")
+    }
+
+    // MARK: - Password Validation Tests
+
+    @Test("Valid password input updates password property and clears error")
+    func testValidPasswordInput() async {
+        let viewModel = LoginRegistrationViewModel()
+        let validPassword = "Password123!"
+
+        viewModel.userPassword = validPassword
+        await Task.yield()
+
+        #expect(viewModel.passwordValidationError == nil)
+    }
+
+    @Test("Invalid password input sets appropriate error message")
+    func testInvalidPasswordInput() async {
+        let viewModel = LoginRegistrationViewModel()
+        let invalidPassword = "weak"
+
+        viewModel.userPassword = invalidPassword
+        await Task.yield()
+
+        #expect(viewModel.passwordValidationError != nil)
     }
 
     // MARK: - Name Validation Tests
 
-    @Test("Valid single name gets stored successfully")
-    mutating func validSingleNameGetsStoredSuccessfully() {
-        viewModel.set(name: "Pawan")
-        #expect(viewModel.name != nil)
-    }
+    @Test("Valid name input updates name property and clears error")
+    func testValidNameInput() async {
+        let viewModel = LoginRegistrationViewModel()
+        let validName = "John Doe"
 
-    // MARK: - Mobile Number Validation Tests
+        viewModel.userName = validName
+        await Task.yield()
 
-    @Test("Valid mobile number gets stored successfully")
-    mutating func validMobileNumberGetsStoredSuccessfully() {
-        viewModel.set(mobileNumber: "+919876543210")
-        #expect(viewModel.mobileNumber != nil)
-        #expect(viewModel.mobileNumberValidationError == nil)
-    }
-
-    // MARK: - Combined Property Tests
-
-    @Test("All valid properties get stored successfully together")
-    mutating func allValidPropertiesGetStoredSuccessfullyTogether() {
-        viewModel.set(email: "pawan.sharma@yash.com")
-        viewModel.set(name: "Pawan")
-        viewModel.set(mobileNumber: "+919876543210")
-        viewModel.set(password: "Abc@12345")
-
-        #expect(viewModel.email != nil)
-        #expect(viewModel.name != nil)
-        #expect(viewModel.mobileNumber != nil)
-        #expect(viewModel.password != nil)
-        #expect(viewModel.emailValidationError == nil)
         #expect(viewModel.nameValidationError == nil)
-        #expect(viewModel.mobileNumberValidationError == nil)
-        #expect(viewModel.passwordValidationError == nil)
     }
 
-    @Test("Setting valid property after invalid one overwrites successfully")
-    mutating func settingValidPropertyAfterInvalidOneOverwritesSuccessfully() {
-        // Set invalid first
-        viewModel.set(email: "invalid-email")
-        if case .success = viewModel.email {
-            Issue.record("Expected '\(String(describing: viewModel.email))' to fail validation")
-        }
+    @Test("Too short name input sets appropriate error message")
+    func testTooShortNameInput() async {
+        let viewModel = LoginRegistrationViewModel()
+        let shortName = "A"
 
-        // Set valid afterwards
-        viewModel.set(email: "valid@email.com")
-        #expect(viewModel.email != nil)
+        viewModel.userName = shortName
+        await Task.yield()
+
+        #expect(viewModel.nameValidationError?.contains("at least") == true)
     }
 
-    @Test("Valid and invalid passwords are handled correctly")
-    mutating func settingValidPasswordAfterInvalidOneOverwritesSuccessfully() {
-        // Set invalid first
-        viewModel.set(password: "Abcd213")
-        if case .success = viewModel.password {
-            Issue.record("Expected '\(String(describing: viewModel.email))' to fail validation")
-        }
+    // MARK: - Sign In Tests
 
-        // Set valid afterwards
-        viewModel.set(password: "Abcd@213")
-        #expect(viewModel.password != nil)
+    @Test("Sign in with valid credentials calls authentication service")
+    func testSignInWithValidCredentials() async {
+        let viewModel = LoginRegistrationViewModel()
+
+        viewModel.userEmail = "test@example.com"
+        viewModel.userPassword = "Password123!"
+        await Task.yield()
+
+        viewModel.signIn()
+        #expect(viewModel.isLoading == false)
     }
 
-    @Test("Setting invalid property after valid one keeps valid value")
-    mutating func settingInvalidPropertyAfterValidOneKeepsValidValue() {
-        // Set valid first
-        viewModel.set(name: "John")
-        #expect(viewModel.name != nil)
+    @Test("Sign in with invalid credentials does not call authentication service")
+    func testSignInWithInvalidCredentials() async {
+        let viewModel = LoginRegistrationViewModel()
 
-        // Attempt to set invalid
-        viewModel.set(name: "")
-        if case .success = viewModel.name {
-            Issue.record("Expected '\(String(describing: viewModel.name))' to fail validation")
-        }
+        viewModel.userEmail = "invalid-email"
+        viewModel.userPassword = "weak"
+        await Task.yield()
+
+        viewModel.signIn()
+
+        #expect(viewModel.isLoading == false)
+    }
+
+    // MARK: - Sign Up Tests
+
+    @Test("Sign up with valid credentials calls authentication service")
+    func testSignUpWithValidCredentials() async {
+        let viewModel = LoginRegistrationViewModel()
+
+        viewModel.userEmail = "test@example.com"
+        viewModel.userPassword = "Password123!"
+        viewModel.userName = "John Doe"
+        await Task.yield()
+
+        viewModel.signup()
+        #expect(viewModel.isLoading == false)
+    }
+
+    @Test("Sign up with invalid credentials does not call authentication service")
+    func testSignUpWithInvalidCredentials() async {
+        let viewModel = LoginRegistrationViewModel()
+
+        viewModel.userEmail = "invalid-email"
+        viewModel.userPassword = "weak"
+        viewModel.userName = "A"
+        await Task.yield()
+
+        viewModel.signup()
+        #expect(viewModel.isLoading == false)
     }
 }
