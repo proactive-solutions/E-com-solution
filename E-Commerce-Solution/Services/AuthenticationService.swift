@@ -42,7 +42,7 @@ final class AuthenticationService: ObservableObject {
         Auth.auth().removeStateDidChangeListener(listener)
     }
 
-    private func handleAuthError(_ error: Error) {
+    private func handleAuthError(_ error: any Error) {
         if let authError = error as NSError? {
             switch AuthErrorCode(rawValue: authError.code) {
             case .emailAlreadyInUse:

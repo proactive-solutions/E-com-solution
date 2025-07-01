@@ -37,9 +37,17 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private let dropFirst: Int
+    private let debounceTime: DispatchQueue.SchedulerTimeType.Stride
+
     lazy var authenticationService = AuthenticationService()
 
-    init() {
+    init(
+        debounceTime: DispatchQueue.SchedulerTimeType.Stride = 0.3,
+        dropFirst: Int = 1
+    ) {
+        self.debounceTime = debounceTime
+        self.dropFirst = dropFirst
         validateEmailInput()
         validatePasswordInput()
         validateNameInput()
@@ -47,9 +55,9 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     fileprivate func validateEmailInput() {
         let emailSub = $userEmail
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .dropFirst()
+            .dropFirst(dropFirst)
             .compactMap { t -> Result<DataModels.EmailAddress, Validator.EmailValidationError>? in
                 do {
                     let e = try DataModels.EmailAddress(t)
@@ -76,9 +84,9 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     fileprivate func validatePasswordInput() {
         let passwordSub = $userPassword
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .dropFirst()
+            .dropFirst(dropFirst)
             .compactMap { t -> Result<DataModels.Password, Validator.PasswordValidationError>? in
                 do {
                     let e = try DataModels.Password(t)
@@ -104,9 +112,9 @@ final class LoginRegistrationViewModel: ObservableObject {
 
     fileprivate func validateNameInput() {
         let userNameSub = $userName
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .dropFirst()
+            .dropFirst(dropFirst)
             .compactMap { t -> Result<DataModels.Name, Validator.NameValidationError>? in
                 do {
                     let e = try DataModels.Name(t)
