@@ -15,7 +15,7 @@ final class PasswordViewModel: ObservableObject {
     @Published var passwordValidationError: String?
     @Published var isPasswordVisible = false
 
-    private(set) var password: Result<Password, Validator.PasswordValidationError>?
+    private(set) var passwordResult: Result<Password, Validator.PasswordValidationError>?
     private let dropFirst: Int
     private let debounceTime: DispatchQueue.SchedulerTimeType.Stride
     private var cancellables = Set<AnyCancellable>()
@@ -30,7 +30,7 @@ final class PasswordViewModel: ObservableObject {
     }
 
     private func validatePasswordInput() {
-        let passwordSub = $userPassword
+        $userPassword
             .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst(dropFirst)
@@ -47,19 +47,17 @@ final class PasswordViewModel: ObservableObject {
             .eraseToAnyPublisher()
             .sink { [weak self] result in
                 guard let self else { return }
-                self.password = result
-                if case let .failure(reason) = self.password {
+                self.passwordResult = result
+                if case let .failure(reason) = self.passwordResult {
                     passwordValidationError = self.passwordErrorDescription(result: reason)
                 } else {
                     passwordValidationError = nil
                 }
             }
-        cancellables.insert(passwordSub)
+            .store(in: &cancellables)
     }
 
-    func passwordErrorDescription(
-        result: Validator.PasswordValidationError
-    ) -> String {
+    func passwordErrorDescription(result: Validator.PasswordValidationError) -> String {
         switch result {
         case let .invalidPassword(requirements):
             NSLocalizedString(requirements.description, comment: "")

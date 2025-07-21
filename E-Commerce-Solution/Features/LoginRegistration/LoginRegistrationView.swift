@@ -55,7 +55,14 @@ struct LoginRegistrationView: View {
                         PrimaryButton(
                             title: "Sign Up",
                             isLoading: viewModel.isLoading,
-                            action: viewModel.signup
+                            action: {
+                                guard
+                                    let email = try? emailViewModel.emailResult?.get(),
+                                    let password = try? passwordViewModel.passwordResult?.get(),
+                                    let name = try? nameViewModel.nameResult?.get()
+                                else { return }
+                                viewModel.signup(email: email, password: password, name: name)
+                            }
                         )
                         .alert(isPresented: Binding(
                             get: {
@@ -81,7 +88,13 @@ struct LoginRegistrationView: View {
                         PrimaryButton(
                             title: "Sign In",
                             isLoading: viewModel.isLoading,
-                            action: viewModel.signIn
+                            action: {
+                                guard
+                                    let email = try? emailViewModel.emailResult?.get(),
+                                    let password = try? passwordViewModel.passwordResult?.get()
+                                else { return }
+                                viewModel.signIn(email: email, password: password)
+                            }
                         )
                         .alert(isPresented: Binding(
                             get: {

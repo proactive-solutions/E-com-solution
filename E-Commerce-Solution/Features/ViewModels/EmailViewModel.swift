@@ -13,7 +13,7 @@ import ValidationKit
 final class EmailViewModel: ObservableObject {
     @Published var userEmail = ""
     @Published var emailValidationError: String?
-    private(set) var email: Result<EmailAddress, Validator.EmailValidationError>?
+    private(set) var emailResult: Result<EmailAddress, Validator.EmailValidationError>?
 
     private let dropFirst: Int
     private let debounceTime: DispatchQueue.SchedulerTimeType.Stride
@@ -29,7 +29,7 @@ final class EmailViewModel: ObservableObject {
     }
 
     private func validateEmailInput() {
-        let emailSub = $userEmail
+        $userEmail
             .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst(dropFirst)
@@ -46,21 +46,18 @@ final class EmailViewModel: ObservableObject {
             .eraseToAnyPublisher()
             .sink { [weak self] result in
                 guard let self else { return }
-                self.email = result
-                if case let .failure(reason) = self.email {
+                self.emailResult = result
+                if case let .failure(reason) = self.emailResult {
                     emailValidationError = self.emailErrorDescription(result: reason)
                 } else {
                     emailValidationError = nil
                 }
             }
-
-        cancellables.insert(emailSub)
+            .store(in: &cancellables)
     }
 
-    func emailErrorDescription(
-        result: Validator.EmailValidationError
-    ) -> String {
-        return switch result {
+    func emailErrorDescription(result: Validator.EmailValidationError) -> String {
+        switch result {
         case .empty: NSLocalizedString("Email address is empty", comment: "")
         case .invalidEmailAddress: NSLocalizedString("Invalid email address", comment: "")
         }

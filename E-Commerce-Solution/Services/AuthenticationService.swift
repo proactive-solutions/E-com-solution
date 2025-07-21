@@ -31,10 +31,12 @@ final class AuthenticationService: ObservableObject {
     // MARK: - Private Methods
 
     private func setupAuthStateListener() {
-        authStateListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-            self?.user = user
-            self?.isAuthenticated = user != nil
-        }
+        authStateListener = Auth
+            .auth()
+            .addStateDidChangeListener { [weak self] _, user in
+                self?.user = user
+                self?.isAuthenticated = user != nil
+            }
     }
 
     private func removeAuthStateListener() {
@@ -42,24 +44,18 @@ final class AuthenticationService: ObservableObject {
         Auth.auth().removeStateDidChangeListener(listener)
     }
 
-    private func handleAuthError(_ error: any Error) {
-        if let authError = error as NSError? {
-            switch AuthErrorCode(rawValue: authError.code) {
-            case .emailAlreadyInUse:
-                errorMessage = "Email is already in use"
-            case .invalidEmail:
-                errorMessage = "Invalid email address"
-            case .weakPassword:
-                errorMessage = "Password is too weak"
-            case .userNotFound:
-                errorMessage = "User not found"
-            case .wrongPassword:
-                errorMessage = "Incorrect password"
-            case .invalidCredential:
-                errorMessage = "Invalid login credentials provided"
-            default:
-                errorMessage = authError.localizedDescription
-            }
+    private func mapErrorToMessage(_ error: any Error) -> String {
+        guard let authError = error as NSError? else {
+            return "An unknown error has occurred. Please try again later"
+        }
+        return switch AuthErrorCode(rawValue: authError.code) {
+        case .emailAlreadyInUse: "Email is already in use"
+        case .invalidEmail     : "Invalid email address"
+        case .weakPassword     : "Password is too weak"
+        case .userNotFound     : "User not found"
+        case .wrongPassword    : "Incorrect password"
+        case .invalidCredential: "Invalid login credentials provided"
+        default                : authError.localizedDescription
         }
     }
 
@@ -82,11 +78,14 @@ final class AuthenticationService: ObservableObject {
             changeRequest.displayName = name.value
             try await changeRequest.commitChanges()
         } catch {
-            handleAuthError(error)
+            errorMessage = mapErrorToMessage(error)
         }
     }
 
-    func signIn(email: DataModels.EmailAddress, password: DataModels.Password) async {
+    func signIn(
+        email: DataModels.EmailAddress,
+        password: DataModels.Password
+    ) async {
         do {
             let result = try await Auth.auth().signIn(
                 withEmail: email.value,
@@ -95,7 +94,7 @@ final class AuthenticationService: ObservableObject {
             user = result.user
             errorMessage = nil
         } catch {
-            handleAuthError(error)
+            errorMessage = mapErrorToMessage(error)
         }
     }
 
@@ -104,7 +103,7 @@ final class AuthenticationService: ObservableObject {
             try Auth.auth().signOut()
             errorMessage = nil
         } catch {
-            handleAuthError(error)
+            errorMessage = mapErrorToMessage(error)
         }
     }
 
@@ -113,7 +112,7 @@ final class AuthenticationService: ObservableObject {
             try await Auth.auth().sendPasswordReset(withEmail: email.value)
             errorMessage = "Password reset email sent"
         } catch {
-            handleAuthError(error)
+            errorMessage = mapErrorToMessage(error)
         }
     }
 
@@ -124,7 +123,7 @@ final class AuthenticationService: ObservableObject {
             try await currentUser.delete()
             errorMessage = nil
         } catch {
-            handleAuthError(error)
+            errorMessage = mapErrorToMessage(error)
         }
     }
 }

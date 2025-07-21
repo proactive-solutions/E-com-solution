@@ -14,7 +14,7 @@ final class NameViewModel: ObservableObject {
     @Published var userName = ""
     @Published var nameValidationError: String?
 
-    private(set) var name: Result<Name, Validator.NameValidationError>?
+    private(set) var nameResult: Result<Name, Validator.NameValidationError>?
     private var cancellables = Set<AnyCancellable>()
 
     private let dropFirst: Int
@@ -30,7 +30,7 @@ final class NameViewModel: ObservableObject {
     }
 
     private func validateNameInput() {
-        let userNameSub = $userName
+        $userName
             .debounce(for: debounceTime, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .dropFirst(dropFirst)
@@ -47,20 +47,17 @@ final class NameViewModel: ObservableObject {
             .eraseToAnyPublisher()
             .sink { [weak self] result in
                 guard let self else { return }
-                self.name = result
-                if case let .failure(reason) = self.name {
+                self.nameResult = result
+                if case let .failure(reason) = self.nameResult {
                     nameValidationError = self.nameErrorDescription(result: reason)
                 } else {
                     nameValidationError = nil
                 }
             }
-
-        cancellables.insert(userNameSub)
+            .store(in: &cancellables)
     }
 
-    func nameErrorDescription(
-        result: Validator.NameValidationError
-    ) -> String {
+    func nameErrorDescription(result: Validator.NameValidationError) -> String {
         return switch result {
         case .invalidCharacters:
             NSLocalizedString("Name contains invalid characters", comment: "")
