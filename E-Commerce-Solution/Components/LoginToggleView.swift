@@ -10,22 +10,22 @@ import SwiftUI
 // MARK: - Login Toggle Component
 
 struct LoginToggleView: View {
-    @Binding var selectedMode: LoginRegistrationViewModel.Mode
+    @Binding var selectedMode: UserAuthMode
 
     var body: some View {
         HStack(spacing: 0) {
             // Login Button
             createToggleButton(
                 title: "Login",
-                isSelected: selectedMode == .login,
-                action: { selectedMode = .login }
+                isSelected: selectedMode == .existing,
+                action: { selectedMode = .existing }
             )
 
             // Sign Up Button
             createToggleButton(
                 title: "Sign Up",
-                isSelected: selectedMode == .signUp,
-                action: { selectedMode = .signUp }
+                isSelected: selectedMode == .new,
+                action: { selectedMode = .new }
             )
         }
         .background(Color(.systemGray6))
@@ -54,8 +54,8 @@ struct LoginToggleView: View {
 
 #Preview {
     VStack {
-        LoginToggleView(selectedMode: .constant(.login))
-        LoginToggleView(selectedMode: .constant(.signUp))
+        LoginToggleView(selectedMode: .constant(.existing))
+        LoginToggleView(selectedMode: .constant(.new))
     }
     .padding()
 }

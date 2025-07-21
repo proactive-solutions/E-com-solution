@@ -13,67 +13,30 @@ import ValidationKit
 
 struct LoginRegistrationView: View {
     @StateObject private var viewModel = LoginRegistrationViewModel()
+    private let emailViewModel = EmailViewModel()
+    private let passwordViewModel = PasswordViewModel()
+    private let nameViewModel = NameViewModel()
 
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
                 // Header Section
                 LoginHeaderView()
+                    .rainbowDebug()
 
                 // Toggle Section
                 LoginToggleView(selectedMode: $viewModel.selectedMode)
+                    .rainbowDebug()
 
                 VStack(spacing: 20) {
                     // Email Field
-                    CustomTextField(
-                        title: "Email Address",
-                        text: $viewModel.userEmail,
-                        placeholder: "Enter your email",
-                        keyboardType: .emailAddress,
-                        autoCorrection: false,
-                        autoCapitalization: .never,
-                        hasError: viewModel.emailValidationError != nil
-                    ) {
-                        Image(systemName: "envelope")
-                            .foregroundColor(.gray)
-                    }
+                    EmailView(
+                        viewModel: emailViewModel)
+                    PasswordView(
+                        viewModel: passwordViewModel)
 
-                    if let validationError = self.viewModel.emailValidationError {
-                        ErrorMessageView(message: validationError)
-                    }
-
-                    // Password Field
-                    CustomSecureField(
-                        title: "Password",
-                        text: $viewModel.userPassword,
-                        placeholder: "Enter your password",
-                        isVisible: $viewModel.isPasswordVisible,
-                        hasError: viewModel.passwordValidationError != nil
-                    )
-
-                    // Error Message
-                    if let validationError = self.viewModel.passwordValidationError {
-                        ErrorMessageView(message: validationError)
-                    }
-
-                    if self.viewModel.selectedMode == .signUp {
-                        // Name field
-                        CustomTextField(
-                            title: "Name",
-                            text: $viewModel.userName,
-                            placeholder: "Enter your full name",
-                            keyboardType: .emailAddress,
-                            autoCorrection: false,
-                            autoCapitalization: .never,
-                            hasError: viewModel.emailValidationError != nil
-                        ) {
-                            Image(systemName: "pencil.circle")
-                                .foregroundColor(.gray)
-                        }
-
-                        if let validationError = self.viewModel.nameValidationError {
-                            ErrorMessageView(message: validationError)
-                        }
+                    if self.viewModel.selectedMode == .new {
+                        NameView(viewModel: nameViewModel)
                     }
 
                     // Forgot Password Link
@@ -86,8 +49,9 @@ struct LoginRegistrationView: View {
                         .font(.system(size: 14))
                         .foregroundColor(.blue)
                     }
+                    .rainbowDebug()
 
-                    if self.viewModel.selectedMode == .signUp {
+                    if self.viewModel.selectedMode == .new {
                         PrimaryButton(
                             title: "Sign Up",
                             isLoading: viewModel.isLoading,
@@ -112,7 +76,7 @@ struct LoginRegistrationView: View {
                         }
                     }
 
-                    if self.viewModel.selectedMode == .login {
+                    if self.viewModel.selectedMode == .existing {
                         // Sign In Button
                         PrimaryButton(
                             title: "Sign In",
@@ -144,11 +108,14 @@ struct LoginRegistrationView: View {
                     onGoogleLogin: viewModel.signInWithGoogle,
                     onAppleLogin: viewModel.signInWithApple
                 )
+                .rainbowDebug()
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 32)
+            .rainbowDebug()
         }
         .background(Color(.systemBackground))
+        .rainbowDebug()
     }
 }
 
@@ -157,3 +124,23 @@ struct LoginRegistrationView: View {
 #Preview {
     LoginRegistrationView()
 }
+
+#if DEBUG
+    fileprivate let rainbowDebugColors: [Color] = [
+        .purple, .blue, .green,
+        .yellow, .orange, .red,
+        .mint, .cyan, .pink, .teal,
+    ]
+
+    extension View {
+        func rainbowDebug() -> some View {
+            background(rainbowDebugColors.randomElement()!)
+        }
+    }
+#else
+    extension View {
+        func rainbowDebug() -> some View {
+            self
+        }
+    }
+#endif
