@@ -9,7 +9,7 @@ import ValidationKit
 public struct EmailAddress: Equatable {
     public var value: String
 
-    public init(_ value: String) throws {
+    public init(_ value: String) throws(Validator.EmailValidationError) {
         switch Validator.validate(email: value) {
         case .success:
             self.value = value

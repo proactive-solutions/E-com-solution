@@ -8,7 +8,7 @@ import ValidationKit
 
 public struct MobileNumber: Equatable {
     public let value: String
-    public init(_ value: String) throws {
+    public init(_ value: String) throws(Validator.MobileNumberValidationError) {
         switch Validator.validate(mobileNumber: value) {
         case .success:
             self.value = value

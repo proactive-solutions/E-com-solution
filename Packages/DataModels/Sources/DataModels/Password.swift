@@ -13,7 +13,7 @@ public struct Password: Equatable {
         _ value: String,
         specialCharacters: String = Validator.defaultSpecialCharacters,
         requirements: Set<Validator.PasswordValidationRequirement> = Validator.defaultPasswordRequirements
-    ) throws {
+    ) throws(Validator.PasswordValidationError) {
         let result = Validator.validate(
             password: value,
             against: requirements,

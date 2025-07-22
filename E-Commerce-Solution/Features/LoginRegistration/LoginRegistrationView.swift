@@ -30,10 +30,8 @@ struct LoginRegistrationView: View {
 
                 VStack(spacing: 20) {
                     // Email Field
-                    EmailView(
-                        viewModel: emailViewModel)
-                    PasswordView(
-                        viewModel: passwordViewModel)
+                    EmailView(viewModel: emailViewModel)
+                    PasswordView(viewModel: passwordViewModel)
 
                     if self.viewModel.selectedMode == .new {
                         NameView(viewModel: nameViewModel)

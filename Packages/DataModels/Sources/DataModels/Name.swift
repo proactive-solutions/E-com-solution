@@ -9,7 +9,7 @@ import ValidationKit
 public struct Name: Equatable {
     public let value: String
 
-    public init(_ value: String) throws {
+    public init(_ value: String) throws(Validator.NameValidationError) {
         switch Validator.validate(name: value) {
         case .success:
             self.value = value

@@ -110,7 +110,7 @@ final class AuthenticationService: ObservableObject {
     func resetPassword(email: DataModels.EmailAddress) async {
         do {
             try await Auth.auth().sendPasswordReset(withEmail: email.value)
-            errorMessage = "Password reset email sent"
+            errorMessage = "Password reset email sent".localize()
         } catch {
             errorMessage = mapErrorToMessage(error)
         }
