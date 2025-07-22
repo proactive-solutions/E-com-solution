@@ -60,7 +60,7 @@ final class PasswordViewModel: ObservableObject {
     func passwordErrorDescription(result: Validator.PasswordValidationError) -> String {
         switch result {
         case let .invalidPassword(requirements):
-            NSLocalizedString(requirements.description, comment: "")
+            requirements.description.localize()
         }
     }
 }

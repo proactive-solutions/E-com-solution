@@ -58,8 +58,8 @@ final class EmailViewModel: ObservableObject {
 
     func emailErrorDescription(result: Validator.EmailValidationError) -> String {
         switch result {
-        case .empty: NSLocalizedString("Email address is empty", comment: "")
-        case .invalidEmailAddress: NSLocalizedString("Invalid email address", comment: "")
+        case .empty              : "Email address is empty".localize()
+        case .invalidEmailAddress: "Invalid email address".localize()
         }
     }
 }

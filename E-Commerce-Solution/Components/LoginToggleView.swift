@@ -43,9 +43,7 @@ struct LoginToggleView: View {
                 .foregroundColor(isSelected ? .white : .secondary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 48)
-                .background(
-                    isSelected ? Color.blue : Color.clear
-                )
+                .background(isSelected ? Color.blue : Color.clear)
                 .clipShape(Capsule())
         }
         .buttonStyle(PlainButtonStyle())

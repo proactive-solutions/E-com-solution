@@ -58,15 +58,10 @@ final class NameViewModel: ObservableObject {
     }
 
     func nameErrorDescription(result: Validator.NameValidationError) -> String {
-        return switch result {
-        case .invalidCharacters:
-            NSLocalizedString("Name contains invalid characters", comment: "")
-
-        case let .tooLong(maximum: length):
-            NSLocalizedString("Name should not be longer than \(length) characters", comment: "")
-
-        case let .tooShort(minimum: length):
-            NSLocalizedString("Name should be at least \(length) characters long", comment: "")
+        switch result {
+        case .invalidCharacters            : "Name contains invalid characters".localize()
+        case let .tooLong(maximum: length) : "Name should not be longer than \(length) characters".localize()
+        case let .tooShort(minimum: length): "Name should be at least \(length) characters long".localize()
         }
     }
 }

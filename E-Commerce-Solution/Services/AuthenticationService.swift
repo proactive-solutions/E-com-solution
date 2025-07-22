@@ -49,12 +49,12 @@ final class AuthenticationService: ObservableObject {
             return "An unknown error has occurred. Please try again later"
         }
         return switch AuthErrorCode(rawValue: authError.code) {
-        case .emailAlreadyInUse: "Email is already in use"
-        case .invalidEmail     : "Invalid email address"
-        case .weakPassword     : "Password is too weak"
-        case .userNotFound     : "User not found"
-        case .wrongPassword    : "Incorrect password"
-        case .invalidCredential: "Invalid login credentials provided"
+        case .emailAlreadyInUse: "Email is already in use".localize()
+        case .invalidEmail     : "Invalid email address".localize()
+        case .weakPassword     : "Password is too weak".localize()
+        case .userNotFound     : "User not found".localize()
+        case .wrongPassword    : "Incorrect password".localize()
+        case .invalidCredential: "Invalid login credentials provided".localize()
         default                : authError.localizedDescription
         }
     }
