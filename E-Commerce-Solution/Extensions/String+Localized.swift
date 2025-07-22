@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    func localize(comment: String? =  nil) -> String {
+    func localize(comment: String? = nil) -> String {
         NSLocalizedString(self, comment: comment ?? "")
     }
 }
