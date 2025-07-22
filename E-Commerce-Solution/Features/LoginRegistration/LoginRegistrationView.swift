@@ -14,7 +14,9 @@ import ComposableArchitecture
 
 struct LoginRegistrationView: View {
     @StateObject private var viewModel = LoginRegistrationViewModel()
-    private let emailFeature = EmailValidationFeature()
+    let emailStore = Store(initialState: EmailValidationFeature.State()) {
+        EmailValidationFeature()
+    }
     private let passwordViewModel = PasswordViewModel()
     private let nameViewModel = NameViewModel()
 
@@ -31,7 +33,7 @@ struct LoginRegistrationView: View {
 
                 VStack(spacing: 20) {
                     // Email Field
-                    EmailValidationView(store: Store(initialState: emailFeature.state) { emailFeature })
+                    EmailValidationView(store: emailStore)
                     PasswordView(viewModel: passwordViewModel)
 
                     if self.viewModel.selectedMode == .new {
@@ -56,7 +58,7 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = emailFeature.state.validatedEmail,
+                                    let email = emailStore.validatedEmail,
                                     let password = try? passwordViewModel.passwordResult?.get(),
                                     let name = try? nameViewModel.nameResult?.get()
                                 else { return }
@@ -89,7 +91,7 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = emailFeature.state.validatedEmail,
+                                    let email = emailStore.validatedEmail,
                                     let password = try? passwordViewModel.passwordResult?.get()
                                 else { return }
                                 viewModel.signIn(email: email, password: password)

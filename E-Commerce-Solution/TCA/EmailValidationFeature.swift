@@ -20,8 +20,6 @@ struct EmailValidationFeature {
         fileprivate(set) var validatedEmail: EmailAddress?
     }
 
-    fileprivate(set) var state = State()
-
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case emailTextChanged(String)
@@ -44,7 +42,7 @@ struct EmailValidationFeature {
 
                 // Debounce validation - wait 0.3 seconds after user stops typing
                 return .run { send in
-//                    try await clock.sleep(for: .milliseconds(300))
+                    try await clock.sleep(for: .milliseconds(300))
                     await send(.validateEmail)
                 }
                 .cancellable(id: CancelID.emailValidation)
