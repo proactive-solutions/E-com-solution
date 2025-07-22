@@ -8,12 +8,13 @@
 import DataModels
 import SwiftUI
 import ValidationKit
+import ComposableArchitecture
 
 // MARK: - Main Login View
 
 struct LoginRegistrationView: View {
     @StateObject private var viewModel = LoginRegistrationViewModel()
-    private let emailViewModel = EmailViewModel()
+    private let emailFeature = EmailValidationFeature()
     private let passwordViewModel = PasswordViewModel()
     private let nameViewModel = NameViewModel()
 
@@ -30,7 +31,7 @@ struct LoginRegistrationView: View {
 
                 VStack(spacing: 20) {
                     // Email Field
-                    EmailView(viewModel: emailViewModel)
+                    EmailValidationView(store: Store(initialState: emailFeature.state) { emailFeature })
                     PasswordView(viewModel: passwordViewModel)
 
                     if self.viewModel.selectedMode == .new {
@@ -55,7 +56,7 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = try? emailViewModel.emailResult?.get(),
+                                    let email = emailFeature.state.validatedEmail,
                                     let password = try? passwordViewModel.passwordResult?.get(),
                                     let name = try? nameViewModel.nameResult?.get()
                                 else { return }
@@ -88,7 +89,7 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = try? emailViewModel.emailResult?.get(),
+                                    let email = emailFeature.state.validatedEmail,
                                     let password = try? passwordViewModel.passwordResult?.get()
                                 else { return }
                                 viewModel.signIn(email: email, password: password)
