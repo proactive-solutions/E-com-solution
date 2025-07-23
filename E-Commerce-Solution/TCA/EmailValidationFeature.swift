@@ -16,8 +16,7 @@ struct EmailValidationFeature {
     struct State: Equatable {
         fileprivate(set) var emailText = ""
         fileprivate(set) var errorMessage: String?
-        fileprivate(set) var isValid = false
-        fileprivate(set) var validatedEmail: EmailAddress?
+        fileprivate(set) var validatedEmailResult: Result<EmailAddress, Validator.EmailValidationError>?
     }
 
     enum Action: BindableAction {
@@ -57,19 +56,18 @@ struct EmailValidationFeature {
         // Skip validation for empty text (don't show error immediately)
         guard !state.emailText.isEmpty else {
             state.errorMessage = nil
-            state.isValid = false
+            state.validatedEmailResult = .failure(.empty)
             return .none
         }
 
         do {
-            state.validatedEmail = try EmailAddress(state.emailText)
+            let validatedEmail = try EmailAddress(state.emailText)
             state.errorMessage = nil
-            state.isValid = true
+            state.validatedEmailResult = .success(validatedEmail)
         } catch let error {
             // Email is invalid
             state.errorMessage = emailErrorMessage(for: error)
-            state.isValid = false
-            state.validatedEmail = nil
+            state.validatedEmailResult = .failure(error)
         }
         return .none
     }

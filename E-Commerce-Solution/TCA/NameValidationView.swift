@@ -8,25 +8,26 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct EmailValidationView: View {
-    let store: StoreOf<EmailValidationFeature>
+struct NameValidationView: View {
+    let store: StoreOf<NameValidationFeature>
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             VStack(alignment: .leading, spacing: 8) {
+                // Name field
                 CustomTextField(
-                    title: "Email Address",
+                    title: "Name",
                     text: viewStore.binding(
-                        get: \.emailText,
-                        send: EmailValidationFeature.Action.emailTextChanged
+                        get: \.nameText,
+                        send: NameValidationFeature.Action.nameTextChanged
                     ),
-                    placeholder: "Enter your email",
+                    placeholder: "Enter your full name",
                     keyboardType: .emailAddress,
                     autoCorrection: false,
                     autoCapitalization: .never,
                     hasError: viewStore.errorMessage != nil
                 ) {
-                    Image(systemName: "envelope")
+                    Image(systemName: "pencil.circle")
                         .foregroundColor(.gray)
                 }
                 .rainbowDebug()
@@ -43,9 +44,9 @@ struct EmailValidationView: View {
 // MARK: - Preview
 
 #Preview {
-    EmailValidationView(
-        store: Store(initialState: EmailValidationFeature.State()) {
-            EmailValidationFeature()
+    NameValidationView(
+        store: Store(initialState: NameValidationFeature.State()) {
+            NameValidationFeature()
         }
     )
 }

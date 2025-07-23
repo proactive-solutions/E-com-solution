@@ -14,11 +14,15 @@ import ComposableArchitecture
 
 struct LoginRegistrationView: View {
     @StateObject private var viewModel = LoginRegistrationViewModel()
-    let emailStore = Store(initialState: EmailValidationFeature.State()) {
+    private let emailStore = Store(initialState: EmailValidationFeature.State()) {
         EmailValidationFeature()
     }
-    private let passwordViewModel = PasswordViewModel()
-    private let nameViewModel = NameViewModel()
+    private let passwordStore = Store(initialState: PasswordValidationFeature.State()) {
+        PasswordValidationFeature()
+    }
+    private let nameStore = Store(initialState: NameValidationFeature.State()) {
+        NameValidationFeature()
+    }
 
     var body: some View {
         ScrollView {
@@ -34,10 +38,10 @@ struct LoginRegistrationView: View {
                 VStack(spacing: 20) {
                     // Email Field
                     EmailValidationView(store: emailStore)
-                    PasswordView(viewModel: passwordViewModel)
+                    PasswordValidationView(store: passwordStore)
 
                     if self.viewModel.selectedMode == .new {
-                        NameView(viewModel: nameViewModel)
+                        NameValidationView(store: nameStore)
                     }
 
                     // Forgot Password Link
@@ -58,9 +62,9 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = emailStore.validatedEmail,
-                                    let password = try? passwordViewModel.passwordResult?.get(),
-                                    let name = try? nameViewModel.nameResult?.get()
+                                    let email = try? emailStore.validatedEmailResult?.get(),
+                                    let password = try? passwordStore.validatedPasswordResult?.get(),
+                                    let name = try? nameStore.validatedNameResult?.get()
                                 else { return }
                                 viewModel.signup(email: email, password: password, name: name)
                             }
@@ -91,8 +95,8 @@ struct LoginRegistrationView: View {
                             isLoading: viewModel.isLoading,
                             action: {
                                 guard
-                                    let email = emailStore.validatedEmail,
-                                    let password = try? passwordViewModel.passwordResult?.get()
+                                    let email = try? emailStore.validatedEmailResult?.get(),
+                                    let password = try? passwordStore.validatedPasswordResult?.get()
                                 else { return }
                                 viewModel.signIn(email: email, password: password)
                             }
