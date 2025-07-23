@@ -37,7 +37,7 @@ struct EmailValidationFeature {
                 return .none
 
             case let .emailTextChanged(text):
-                state.emailText = text
+                state.emailText = text.lowercased()
 
                 // Debounce validation - wait 0.3 seconds after user stops typing
                 return .run { send in
@@ -74,7 +74,7 @@ struct EmailValidationFeature {
 
     private func emailErrorMessage(for error: Validator.EmailValidationError) -> String {
         switch error {
-        case .empty:               "Email address is empty".localize()
+        case .empty              : "Email address is empty".localize()
         case .invalidEmailAddress: "Invalid email address".localize()
         }
     }
