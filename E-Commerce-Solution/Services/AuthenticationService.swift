@@ -67,10 +67,9 @@ final class AuthenticationService: ObservableObject {
         name: DataModels.Name
     ) async {
         do {
-            let result = try await Auth.auth().createUser(
-                withEmail: email.value,
-                password: password.value
-            )
+            let result = try await Auth
+                .auth()
+                .createUser(withEmail: email.value, password: password.value)
             user = result.user
             errorMessage = nil
             // Update the user profile with display name
@@ -87,10 +86,9 @@ final class AuthenticationService: ObservableObject {
         password: DataModels.Password
     ) async {
         do {
-            let result = try await Auth.auth().signIn(
-                withEmail: email.value,
-                password: password.value
-            )
+            let result = try await Auth
+                .auth()
+                .signIn(withEmail: email.value, password: password.value)
             user = result.user
             errorMessage = nil
         } catch {
@@ -109,7 +107,9 @@ final class AuthenticationService: ObservableObject {
 
     func resetPassword(email: DataModels.EmailAddress) async {
         do {
-            try await Auth.auth().sendPasswordReset(withEmail: email.value)
+            try await Auth
+                .auth()
+                .sendPasswordReset(withEmail: email.value)
             errorMessage = "Password reset email sent".localize()
         } catch {
             errorMessage = mapErrorToMessage(error)
@@ -117,7 +117,9 @@ final class AuthenticationService: ObservableObject {
     }
 
     func deleteAccount() async {
-        guard let currentUser = Auth.auth().currentUser else { return }
+        guard let currentUser = Auth
+            .auth()
+            .currentUser else { return }
 
         do {
             try await currentUser.delete()

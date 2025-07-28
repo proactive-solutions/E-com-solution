@@ -24,15 +24,8 @@ struct LoginHeaderView: View {
 
             // Welcome Text
             VStack(spacing: 8) {
-                Text("Welcome")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-
-                Text("Create your account to get started")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
+                HeadingText("Welcome")
+                SubHeadingText("Create your account to get started")
             }
         }
     }
