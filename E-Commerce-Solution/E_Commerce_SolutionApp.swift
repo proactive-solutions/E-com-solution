@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct E_Commerce_SolutionApp: App {
@@ -14,7 +15,13 @@ struct E_Commerce_SolutionApp: App {
 
   var body: some Scene {
     WindowGroup {
-      LoginRegistrationView()
+      LoginRegistrationView(
+          store: Store(
+              initialState: FirebaseAuthFeature.State()
+          ) {
+              FirebaseAuthFeature()
+          }
+      )
     }
   }
 }

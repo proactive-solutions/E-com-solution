@@ -18,6 +18,7 @@ struct FirebaseAuthFeature {
     var currentUser: AuthUser?
     var errorMessage: String?
     var showErrorAlert = false
+    var selectedMode = UserAuthMode.existing
 
     // Computed properties
     var isSignedIn: Bool {
@@ -39,6 +40,7 @@ struct FirebaseAuthFeature {
     case dismissErrorAlert
     case startListeningToAuthState
     case stopListeningToAuthState
+    case switchAuthMode
   }
 
   @Dependency(\.firebaseAuthClient) var firebaseAuthClient
@@ -48,6 +50,10 @@ struct FirebaseAuthFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .switchAuthMode:
+        state.selectedMode = if state.selectedMode == .new { .existing } else { .new }
+        return .none
+
       case let .signIn(email, password):
         state.isLoading = true
 
