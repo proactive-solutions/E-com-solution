@@ -6,6 +6,6 @@
 //
 
 enum UserAuthMode {
-    case existing
-    case new
+  case existing
+  case new
 }

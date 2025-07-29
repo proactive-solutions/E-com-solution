@@ -6,11 +6,11 @@
 //
 
 public protocol Mappable {
-    func map<T>(_ transform: (_ value: Self) -> T) -> T
+  func map<T>(_ transform: (_ value: Self) -> T) -> T
 }
 
 public extension Mappable {
-    func map<T>(_ transform: (_ value: Self) -> T) -> T {
-        transform(self)
-    }
+  func map<T>(_ transform: (_ value: Self) -> T) -> T {
+    transform(self)
+  }
 }

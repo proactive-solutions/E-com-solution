@@ -95,7 +95,9 @@
 				F2D551802DFAC72A003841BA /* E-Commerce-SolutionUITests */,
 				F2D5515F2DFAC728003841BA /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		F2D5515F2DFAC728003841BA /* Products */ = {
 			isa = PBXGroup;
