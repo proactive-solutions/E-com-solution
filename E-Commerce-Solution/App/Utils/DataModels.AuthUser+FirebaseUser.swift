@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  DataModels.AuthUser+FirebaseUser.swift
 //  E-Commerce-Solution
 //
 //  Created by Pawan Sharma on 30/07/2025.

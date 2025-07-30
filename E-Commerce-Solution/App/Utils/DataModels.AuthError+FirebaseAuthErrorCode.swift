@@ -1,12 +1,13 @@
 //
-//  File.swift
+//  DataModels.AuthError+FirebaseAuthErrorCode.swift
 //  E-Commerce-Solution
 //
 //  Created by Pawan Sharma on 30/07/2025.
 //
 
-import FirebaseAuth
 import DataModels
+import FirebaseAuth
+
 // MARK: - Auth Error
 
 extension DataModels.AuthError {
