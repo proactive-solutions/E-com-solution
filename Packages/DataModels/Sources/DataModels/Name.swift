@@ -6,16 +6,16 @@
 //
 import ValidationKit
 
-public struct Name: Equatable {
-    public let value: String
+public struct Name: Equatable, Sendable {
+  public let value: String
 
-    public init(_ value: String) throws {
-        switch Validator.validate(name: value) {
-        case .success:
-            self.value = value
+  public init(_ value: String) throws(Validator.NameValidationError) {
+    switch Validator.validate(name: value) {
+    case .success:
+      self.value = value
 
-        case let .failure(reason):
-            throw reason
-        }
+    case let .failure(reason):
+      throw reason
     }
+  }
 }

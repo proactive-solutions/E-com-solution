@@ -10,52 +10,56 @@ import SwiftUI
 // MARK: - Login Toggle Component
 
 struct LoginToggleView: View {
-    @Binding var selectedMode: LoginRegistrationViewModel.Mode
+  @Binding var selectedMode: UserAuthMode
 
-    var body: some View {
-        HStack(spacing: 0) {
-            // Login Button
-            createToggleButton(
-                title: "Login",
-                isSelected: selectedMode == .login,
-                action: { selectedMode = .login }
-            )
-
-            // Sign Up Button
-            createToggleButton(
-                title: "Sign Up",
-                isSelected: selectedMode == .signUp,
-                action: { selectedMode = .signUp }
-            )
+  var body: some View {
+    HStack(spacing: 0) {
+      // Login Button
+      createToggleButton(
+        title: "Login",
+        isSelected: selectedMode == .existing,
+        action: {
+          if selectedMode == .existing { return }
+          selectedMode = .existing
         }
-        .background(Color(.systemGray6))
+      )
+
+      // Sign Up Button
+      createToggleButton(
+        title: "Sign Up",
+        isSelected: selectedMode == .new,
+        action: {
+          if selectedMode == .new { return }
+          selectedMode = .new
+        }
+      )
+    }
+    .background(Color(.systemGray6))
+    .clipShape(Capsule())
+  }
+
+  private func createToggleButton(
+    title: String,
+    isSelected: Bool,
+    action: @escaping () -> Void
+  ) -> some View {
+    Button(action: action) {
+      Text(title)
+        .font(.system(size: 16, weight: .medium))
+        .foregroundColor(isSelected ? .white : .secondary)
+        .frame(maxWidth: .infinity)
+        .frame(height: 48)
+        .background(isSelected ? Color.blue : Color.clear)
         .clipShape(Capsule())
     }
-
-    private func createToggleButton(
-        title: String,
-        isSelected: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(isSelected ? .white : .secondary)
-                .frame(maxWidth: .infinity)
-                .frame(height: 48)
-                .background(
-                    isSelected ? Color.blue : Color.clear
-                )
-                .clipShape(Capsule())
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
+    .buttonStyle(PlainButtonStyle())
+  }
 }
 
 #Preview {
-    VStack {
-        LoginToggleView(selectedMode: .constant(.login))
-        LoginToggleView(selectedMode: .constant(.signUp))
-    }
-    .padding()
+  VStack {
+    LoginToggleView(selectedMode: .constant(.existing))
+    LoginToggleView(selectedMode: .constant(.new))
+  }
+  .padding()
 }
