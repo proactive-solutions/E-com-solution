@@ -19,13 +19,14 @@ struct NameValidationView: View {
           title: "Name",
           text: viewStore.binding(
             get: \.nameText,
-            send: NameValidationFeature.Action.nameTextChanged),
+            send: NameValidationFeature.Action.nameTextChanged
+          ),
           placeholder: "Enter your full name",
           keyboardType: .emailAddress,
           autoCorrection: false,
           autoCapitalization: .never,
-          hasError: viewStore.errorMessage != nil)
-        {
+          hasError: viewStore.errorMessage != nil
+        ) {
           Image(systemName: "pencil.circle")
             .foregroundColor(.gray)
         }

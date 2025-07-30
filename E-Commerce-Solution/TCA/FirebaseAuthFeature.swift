@@ -15,7 +15,7 @@ struct FirebaseAuthFeature {
   @ObservableState
   struct State: Equatable {
     var isLoading = false
-    var currentUser: AuthUser?
+    var currentUser: DataModels.AuthUser?
     var errorMessage: String?
     var showErrorAlert = false
     var selectedMode = UserAuthMode.existing
@@ -29,11 +29,13 @@ struct FirebaseAuthFeature {
   enum Action {
     case signIn(
       email: DataModels.EmailAddress,
-      password: DataModels.Password)
+      password: DataModels.Password
+    )
     case signUp(
       email: DataModels.EmailAddress,
       password: DataModels.Password,
-      name: DataModels.Name)
+      name: DataModels.Name
+    )
     case signOut
     case authStateChanged(AuthUser?)
     case authResponse(Result<AuthUser, AuthError>)
@@ -119,70 +121,6 @@ struct FirebaseAuthFeature {
       case .stopListeningToAuthState:
         return .cancel(id: CancelID.authStateListener)
       }
-    }
-  }
-}
-
-// MARK: - Auth User Model
-
-struct AuthUser: Equatable {
-  let uid: String
-  let email: String?
-  let displayName: String?
-  let isEmailVerified: Bool
-
-  init(from firebaseUser: User) {
-    uid = firebaseUser.uid
-    email = firebaseUser.email
-    displayName = firebaseUser.displayName
-    isEmailVerified = firebaseUser.isEmailVerified
-  }
-}
-
-// MARK: - Auth Error
-
-enum AuthError: Error, Equatable {
-  case invalidEmail
-  case wrongPassword
-  case userNotFound
-  case emailAlreadyInUse
-  case weakPassword
-  case networkError
-  case unknown(String)
-
-  var localizedDescription: String {
-    switch self {
-    case .invalidEmail     : "Invalid email address"
-    case .wrongPassword    : "Incorrect password"
-    case .userNotFound     : "No account found with this email"
-    case .emailAlreadyInUse: "Email address is already in use"
-    case .weakPassword     : "Password is too weak"
-    case .networkError     : "Network error occurred"
-    case let .unknown(msg) : msg
-    }
-  }
-
-  init(from firebaseError: any Error) {
-    guard let authError = firebaseError as NSError? else {
-      self = .unknown(firebaseError.localizedDescription)
-      return
-    }
-
-    switch AuthErrorCode(rawValue: authError.code) {
-    case .invalidEmail:
-      self = .invalidEmail
-    case .wrongPassword:
-      self = .wrongPassword
-    case .userNotFound:
-      self = .userNotFound
-    case .emailAlreadyInUse:
-      self = .emailAlreadyInUse
-    case .weakPassword:
-      self = .weakPassword
-    case .networkError:
-      self = .networkError
-    default:
-      self = .unknown(authError.localizedDescription)
     }
   }
 }

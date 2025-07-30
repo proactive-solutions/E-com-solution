@@ -27,8 +27,8 @@ struct CustomTextField<TrailingContent: View>: View {
     autoCorrection: Bool = false,
     autoCapitalization: TextInputAutocapitalization? = nil,
     hasError: Bool = false,
-    @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() })
-  {
+    @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }
+  ) {
     self.title = title
     _text = text
     self.placeholder = placeholder

@@ -42,11 +42,13 @@ struct PrimaryButton: View {
     PrimaryButton(
       title: "Button",
       isLoading: false,
-      action: {})
+      action: {}
+    )
     PrimaryButton(
       title: "Button",
       isLoading: true,
-      action: {})
+      action: {}
+    )
   }
   .padding()
 }

@@ -7,8 +7,8 @@ import SwiftUI
 class AppDelegate: NSObject, UIApplicationDelegate {
   func application(
     _: UIApplication,
-    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
-  {
+    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
     FirebaseApp.configure()
     return true
   }

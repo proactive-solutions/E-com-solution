@@ -28,7 +28,8 @@ final class MobileNumberValidationTests: XCTestCase {
     for number in validUSNumbers {
       XCTAssertNoThrow(
         try Validator.validate(mobileNumber: number).get(),
-        "Expected '\(number)' to be valid")
+        "Expected '\(number)' to be valid"
+      )
     }
   }
 
@@ -45,7 +46,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertNoThrow(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -60,7 +62,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertNoThrow(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -75,7 +78,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertNoThrow(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -91,7 +95,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertNoThrow(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -109,7 +114,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertNoThrow(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -127,7 +133,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -146,7 +153,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -164,7 +172,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be valid")
+        "Expected '\(phoneNumber)' to be valid"
+      )
     }
   }
 
@@ -179,7 +188,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 
@@ -194,7 +204,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 
@@ -211,7 +222,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 
@@ -226,7 +238,8 @@ final class MobileNumberValidationTests: XCTestCase {
       // Assuming the validator handles whitespace trimming
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 
@@ -241,7 +254,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 
@@ -255,7 +269,8 @@ final class MobileNumberValidationTests: XCTestCase {
       let result = Validator.validate(mobileNumber: phoneNumber)
       XCTAssertThrowsError(
         try result.get(),
-        "Expected '\(phoneNumber)' to be invalid")
+        "Expected '\(phoneNumber)' to be invalid"
+      )
     }
   }
 }

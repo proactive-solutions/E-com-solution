@@ -15,13 +15,7 @@ struct E_Commerce_SolutionApp: App {
 
   var body: some Scene {
     WindowGroup {
-      LoginRegistrationView(
-        store: Store(
-          initialState: FirebaseAuthFeature.State()
-        ) {
-          FirebaseAuthFeature()
-        }
-      )
+      LoginRegistrationView()
     }
   }
 }

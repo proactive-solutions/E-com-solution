@@ -13,8 +13,8 @@ extension Validator.PasswordValidationRequirement: Mappable {}
 extension Validator.PasswordValidationRequirement: Equatable {
   public static func == (
     lhs: Validator.PasswordValidationRequirement,
-    rhs: Validator.PasswordValidationRequirement) -> Bool
-  {
+    rhs: Validator.PasswordValidationRequirement
+  ) -> Bool {
     switch (lhs, rhs) {
     case let (.minLength(length1), .minLength(length2)): length1 == length2
     case let (.maxLength(length1), .maxLength(length2)): length1 == length2
@@ -31,8 +31,8 @@ extension Validator.PasswordValidationRequirement: Equatable {
 extension Validator.PasswordValidationError: Equatable {
   public static func == (
     lhs: Validator.PasswordValidationError,
-    rhs: Validator.PasswordValidationError) -> Bool
-  {
+    rhs: Validator.PasswordValidationError
+  ) -> Bool {
     switch (lhs, rhs) {
     case (.invalidPassword, .invalidPassword): true
     default: false
@@ -68,8 +68,8 @@ public extension Validator {
   static func validate(
     password: String,
     against requirements: Set<PasswordValidationRequirement> = defaultPasswordRequirements,
-    specialCharacters: String = defaultSpecialCharacters) -> Result<Void, PasswordValidationError>
-  {
+    specialCharacters: String = defaultSpecialCharacters
+  ) -> Result<Void, PasswordValidationError> {
     var failures: [PasswordValidationRequirement] = []
 
     for requirement in requirements {
@@ -105,7 +105,8 @@ public extension Validator {
       case let .regex(passwordValidationRegex):
         let passwordPredicate = NSPredicate(
           format: "SELF MATCHES %@",
-          passwordValidationRegex)
+          passwordValidationRegex
+        )
         if !passwordPredicate.evaluate(with: password) {
           failures.append(requirement)
         }

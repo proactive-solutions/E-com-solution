@@ -19,12 +19,15 @@ struct PasswordValidationView: View {
           title: "Password",
           text: viewStore.binding(
             get: \.passwordText,
-            send: PasswordValidationFeature.Action.passwordTextChanged),
+            send: PasswordValidationFeature.Action.passwordTextChanged
+          ),
           placeholder: "Enter your password",
           isVisible: viewStore.binding(
             get: \.isPasswordVisible,
-            send: PasswordValidationFeature.Action.togglePasswordVisibility),
-          hasError: viewStore.errorMessage != nil)
+            send: PasswordValidationFeature.Action.togglePasswordVisibility
+          ),
+          hasError: viewStore.errorMessage != nil
+        )
 
         // Error Message
         if let validationError = viewStore.errorMessage {

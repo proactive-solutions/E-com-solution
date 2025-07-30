@@ -18,13 +18,14 @@ struct EmailValidationView: View {
           title: "Email Address",
           text: viewStore.binding(
             get: \.emailText,
-            send: EmailValidationFeature.Action.emailTextChanged),
+            send: EmailValidationFeature.Action.emailTextChanged
+          ),
           placeholder: "Enter your email",
           keyboardType: .emailAddress,
           autoCorrection: false,
           autoCapitalization: .never,
-          hasError: viewStore.errorMessage != nil)
-        {
+          hasError: viewStore.errorMessage != nil
+        ) {
           Image(systemName: "envelope")
             .foregroundColor(.gray)
         }

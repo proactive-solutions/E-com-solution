@@ -13,18 +13,28 @@ import ValidationKit
 // MARK: - Main Login View
 
 struct LoginRegistrationView: View {
-  let store: StoreOf<FirebaseAuthFeature>
-
-  private let emailStore = Store(initialState: EmailValidationFeature.State()) {
+  private let emailStore = Store(
+    initialState: EmailValidationFeature.State())
+  {
     EmailValidationFeature()
   }
 
-  private let passwordStore = Store(initialState: PasswordValidationFeature.State()) {
+  private let passwordStore = Store(
+    initialState: PasswordValidationFeature.State())
+  {
     PasswordValidationFeature()
   }
 
-  private let nameStore = Store(initialState: NameValidationFeature.State()) {
+  private let nameStore = Store(
+    initialState: NameValidationFeature.State())
+  {
     NameValidationFeature()
+  }
+
+  private let store: StoreOf<FirebaseAuthFeature> = Store(
+    initialState: FirebaseAuthFeature.State())
+  {
+    FirebaseAuthFeature()
   }
 
   var body: some View {
@@ -38,7 +48,9 @@ struct LoginRegistrationView: View {
           LoginToggleView(
             selectedMode: viewStore.binding(
               get: \.selectedMode,
-              send: FirebaseAuthFeature.Action.switchAuthMode))
+              send: .switchAuthMode
+            )
+          )
 
           VStack(spacing: 20) {
             // Email Field
@@ -68,20 +80,18 @@ struct LoginRegistrationView: View {
                     let name = try? nameStore.validatedNameResult?.get()
                   else { return }
                   viewStore.send(.signUp(email: email, password: password, name: name))
-                })
-                .alert(isPresented: Binding(
-                  get: {
-                    guard let _ = store.errorMessage else { return false }
-                    return true
-                  },
-                  set: { _ in
-
-                  })) {
-                    Alert(
-                      title: Text("Attention"),
-                      message: Text(store.errorMessage ?? "Unknown error!"),
-                      dismissButton: .default(Text("Ok")))
                 }
+              )
+              .alert(isPresented: viewStore.binding(
+                get: \.showErrorAlert,
+                send: .dismissErrorAlert
+              )) {
+                Alert(
+                  title: Text("Attention"),
+                  message: Text(store.errorMessage ?? "Unknown error!"),
+                  dismissButton: .default(Text("Ok"))
+                )
+              }
             }
 
             if store.selectedMode == .existing {
@@ -96,27 +106,26 @@ struct LoginRegistrationView: View {
                   else { return }
 
                   viewStore.send(.signIn(email: email, password: password))
-                })
-                .alert(isPresented: Binding(
-                  get: {
-                    guard let _ = store.errorMessage else { return false }
-                    return true
-                  },
-                  set: { _ in
-
-                  })) {
-                    Alert(
-                      title: Text("Attention"),
-                      message: Text(store.errorMessage ?? "Unknown error!"),
-                      dismissButton: .default(Text("Ok")))
                 }
+              )
+              .alert(isPresented: viewStore.binding(
+                get: \.showErrorAlert,
+                send: .dismissErrorAlert
+              )) {
+                Alert(
+                  title: Text("Attention"),
+                  message: Text(store.errorMessage ?? "Unknown error!"),
+                  dismissButton: .default(Text("Ok"))
+                )
+              }
             }
           }
 
           // Social Login Section
           SocialLoginView(
             onGoogleLogin: {},
-            onAppleLogin: {})
+            onAppleLogin: {}
+          )
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 32)
@@ -135,13 +144,7 @@ struct LoginRegistrationView: View {
 // MARK: - Preview
 
 #Preview {
-  LoginRegistrationView(
-    store: Store(
-      initialState: FirebaseAuthFeature.State()
-    ) {
-      FirebaseAuthFeature()
-    }
-  )
+  LoginRegistrationView()
 }
 
 #if DEBUG

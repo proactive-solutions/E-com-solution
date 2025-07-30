@@ -11,8 +11,8 @@ extension Validator.NameValidationError: Mappable {}
 extension Validator.NameValidationError: Equatable {
   public static func == (
     lhs: Validator.NameValidationError,
-    rhs: Validator.NameValidationError) -> Bool
-  {
+    rhs: Validator.NameValidationError
+  ) -> Bool {
     switch (lhs, rhs) {
     case let (.tooShort(len1), .tooShort(len2)): len1 == len2
     case let (.tooLong(len1), .tooLong(len2)): len1 == len2
@@ -52,8 +52,8 @@ public extension Validator {
   static func validate(
     name: String,
     minLength: UInt = 3,
-    maxLength: UInt = 30) -> Result<Void, NameValidationError>
-  {
+    maxLength: UInt = 30
+  ) -> Result<Void, NameValidationError> {
     let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
     let trimmedNameLength = trimmedName.count
 

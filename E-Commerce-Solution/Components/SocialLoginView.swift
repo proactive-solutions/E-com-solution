@@ -25,15 +25,16 @@ struct SocialLoginView: View {
           icon: "G",
           backgroundColor: .white,
           foregroundColor: .black,
-          action: onGoogleLogin)
+          action: onGoogleLogin
+        )
 
         SocialLoginButton(
           title: "Continue with Apple",
           icon: "",
           backgroundColor: .white,
           foregroundColor: .black,
-          action: onAppleLogin)
-        {
+          action: onAppleLogin
+        ) {
           Image(systemName: "apple.logo")
             .font(.system(size: 18, weight: .medium))
             .foregroundColor(.black)

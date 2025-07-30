@@ -23,8 +23,8 @@ struct SocialLoginButton<IconContent: View>: View {
     backgroundColor: Color,
     foregroundColor: Color,
     action: @escaping () -> Void,
-    @ViewBuilder iconContent: @escaping () -> IconContent = { EmptyView() })
-  {
+    @ViewBuilder iconContent: @escaping () -> IconContent = { EmptyView() }
+  ) {
     self.title = title
     self.icon = icon
     self.backgroundColor = backgroundColor

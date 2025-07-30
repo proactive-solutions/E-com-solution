@@ -15,14 +15,16 @@ import Foundation
 struct FirebaseAuthClient {
   let signIn: @Sendable (
     DataModels.EmailAddress,
-    DataModels.Password) async -> Result<AuthUser, AuthError>
+    DataModels.Password
+  ) async -> Result<DataModels.AuthUser, DataModels.AuthError>
   let signUp: @Sendable (
     DataModels.EmailAddress,
     DataModels.Password,
-    DataModels.Name) async -> Result<AuthUser, AuthError>
-  let signOut: @Sendable () async -> Result<Void, AuthError>
-  let authStateStream: @Sendable () -> AsyncStream<AuthUser?>
-  let getCurrentUser: @Sendable () -> AuthUser?
+    DataModels.Name
+  ) async -> Result<DataModels.AuthUser, DataModels.AuthError>
+  let signOut: @Sendable () async -> Result<Void, DataModels.AuthError>
+  let authStateStream: @Sendable () -> AsyncStream<DataModels.AuthUser?>
+  let getCurrentUser: @Sendable () -> DataModels.AuthUser?
 }
 
 // MARK: - Live Implementation
@@ -34,12 +36,12 @@ extension FirebaseAuthClient {
         Auth
           .auth()
           .signIn(withEmail: email.value, password: password.value) { result, error in
-            if let error {
+            if let signInError = error {
               continuation
-                .resume(returning: .failure(AuthError(from: error)))
+                .resume(returning: .failure(DataModels.AuthError.from(signInError)))
             } else if let user = result?.user {
               continuation
-                .resume(returning: .success(AuthUser(from: user)))
+                .resume(returning: .success(DataModels.AuthUser.from(user)))
             } else {
               continuation
                 .resume(returning: .failure(.unknown("Unknown error occurred")))
@@ -53,20 +55,20 @@ extension FirebaseAuthClient {
         Auth
           .auth()
           .createUser(withEmail: email.value, password: password.value) { result, error in
-            if let error {
+            if let signupError = error {
               continuation
-                .resume(returning: .failure(AuthError(from: error)))
-            } else if let user = result?.user {
+                .resume(returning: .failure(DataModels.AuthError.from(signupError)))
+            } else if let firebaseUser = result?.user {
               // Set display name after creating user
-              let changeRequest = user.createProfileChangeRequest()
+              let changeRequest = firebaseUser.createProfileChangeRequest()
               changeRequest.displayName = name.value
               changeRequest.commitChanges { error in
-                if let error {
+                if let updateProfileError = error {
                   continuation
-                    .resume(returning: .failure(AuthError(from: error)))
+                    .resume(returning: .failure(DataModels.AuthError.from(updateProfileError)))
                 } else {
                   continuation
-                    .resume(returning: .success(AuthUser(from: user)))
+                    .resume(returning: .success(DataModels.AuthUser.from(firebaseUser)))
                 }
               }
             } else {
@@ -83,9 +85,9 @@ extension FirebaseAuthClient {
           try Auth.auth().signOut()
           continuation
             .resume(returning: .success(()))
-        } catch {
+        } catch let signOutError {
           continuation
-            .resume(returning: .failure(AuthError(from: error)))
+            .resume(returning: .failure(AuthError.from(signOutError)))
         }
       }
     },
@@ -95,7 +97,7 @@ extension FirebaseAuthClient {
         let handle = Auth
           .auth()
           .addStateDidChangeListener { _, user in
-            let authUser = user.map(AuthUser.init)
+            let authUser = user.map(DataModels.AuthUser.from)
             continuation.yield(authUser)
           }
 
@@ -106,9 +108,10 @@ extension FirebaseAuthClient {
     },
 
     getCurrentUser: {
-      guard let user = Auth.auth().currentUser else { return nil }
-      return AuthUser(from: user)
-    })
+      guard let firebaseUser = Auth.auth().currentUser else { return nil }
+      return AuthUser.from(firebaseUser)
+    }
+  )
 }
 
 // MARK: - Test Implementation
@@ -121,11 +124,12 @@ extension FirebaseAuthClient {
 
       // Mock validation
       if email.value == "test@example.com", password.value == "password123" {
-        return .success(AuthUser(
+        return .success(DataModels.AuthUser(
           uid: "test-uid",
           email: email.value,
           displayName: "Test User",
-          isEmailVerified: true))
+          isEmailVerified: true
+        ))
       } else {
         return .failure(.wrongPassword)
       }
@@ -138,11 +142,12 @@ extension FirebaseAuthClient {
         return .failure(.emailAlreadyInUse)
       }
 
-      return .success(AuthUser(
+      return .success(DataModels.AuthUser(
         uid: "new-user-uid",
         email: email.value,
         displayName: name.value,
-        isEmailVerified: false))
+        isEmailVerified: false
+      ))
     },
 
     signOut: {
@@ -163,25 +168,9 @@ extension FirebaseAuthClient {
 
     getCurrentUser: {
       nil // Mock: no user signed in initially
-    })
+    }
+  )
 }
-
-// MARK: - AuthUser Extension for Testing
-
-extension AuthUser {
-  init(
-    uid: String,
-    email: String?,
-    displayName: String?,
-    isEmailVerified: Bool)
-  {
-    self.uid = uid
-    self.email = email
-    self.displayName = displayName
-    self.isEmailVerified = isEmailVerified
-  }
-}
-
 // MARK: - Dependency Registration
 
 extension DependencyValues {

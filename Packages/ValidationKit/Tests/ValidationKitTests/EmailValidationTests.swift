@@ -13,7 +13,8 @@ final class EmailValidationTests: XCTestCase {
   func testEmptyEmail() {
     XCTAssertThrowsError(
       try Validator.validate(email: "").get(),
-      "passing the empty string, as an argument should cause the validation failure")
+      "passing the empty string, as an argument should cause the validation failure"
+    )
   }
 
   func testValidEmails() {
@@ -26,7 +27,8 @@ final class EmailValidationTests: XCTestCase {
     for email in validEmails {
       XCTAssertNoThrow(
         try Validator.validate(email: email).get(),
-        "Expected \(email) to be valid")
+        "Expected \(email) to be valid"
+      )
     }
   }
 
@@ -45,7 +47,8 @@ final class EmailValidationTests: XCTestCase {
     for email in invalidFormats {
       XCTAssertThrowsError(
         try Validator.validate(email: email).get(),
-        "Expected \(email) to have invalid format")
+        "Expected \(email) to have invalid format"
+      )
     }
   }
 
@@ -59,7 +62,8 @@ final class EmailValidationTests: XCTestCase {
     for email in invalidDomains {
       XCTAssertThrowsError(
         try Validator.validate(email: email).get(),
-        "Expected \(email) to have invalid domain")
+        "Expected \(email) to have invalid domain"
+      )
     }
   }
 }

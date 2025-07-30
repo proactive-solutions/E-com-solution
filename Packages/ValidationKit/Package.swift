@@ -12,7 +12,8 @@ let package = Package(
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
       name: "ValidationKit",
-      targets: ["ValidationKit"]),
+      targets: ["ValidationKit"]
+    ),
   ],
   dependencies: [
     .package(url: "https://github.com/marmelroy/PhoneNumberKit.git", .upToNextMajor(from: "4.1.0")),
@@ -24,8 +25,11 @@ let package = Package(
       name: "ValidationKit",
       dependencies: [
         .product(name: "PhoneNumberKit", package: "PhoneNumberKit"),
-      ]),
+      ]
+    ),
     .testTarget(
       name: "ValidationKitTests",
-      dependencies: ["ValidationKit"]),
-  ])
+      dependencies: ["ValidationKit"]
+    ),
+  ]
+)

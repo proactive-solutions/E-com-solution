@@ -16,11 +16,13 @@ final class PasswordValidatorTests: XCTestCase {
     let passwordUnderTest = "Passw0rd!"
     let result = Validator.validate(
       password: passwordUnderTest,
-      against: requirements)
+      against: requirements
+    )
 
     XCTAssertNoThrow(
       try result.get(),
-      "\(passwordUnderTest) Should be a valid password for \(requirements)")
+      "\(passwordUnderTest) Should be a valid password for \(requirements)"
+    )
   }
 
   // Test minimum length requirement
@@ -181,7 +183,8 @@ final class PasswordValidatorTests: XCTestCase {
     let result = Validator.validate(
       password: "Password1-",
       against: requirements,
-      specialCharacters: customSpecialChars)
+      specialCharacters: customSpecialChars
+    )
 
     switch result {
     case .success:
@@ -200,6 +203,7 @@ final class PasswordValidatorTests: XCTestCase {
     let result = Validator.validate(password: "Ashlesha@123")
     XCTAssertNoThrow(
       try result.get(),
-      "Password is valid with default requirements")
+      "Password is valid with default requirements"
+    )
   }
 }

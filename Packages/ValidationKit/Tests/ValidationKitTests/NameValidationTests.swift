@@ -23,7 +23,8 @@ final class NameValidationTests: XCTestCase {
     for name in validNames {
       XCTAssertNoThrow(
         try Validator.validate(name: name).get(),
-        "'\(name)' should be valid")
+        "'\(name)' should be valid"
+      )
     }
   }
 
@@ -48,7 +49,8 @@ final class NameValidationTests: XCTestCase {
         XCTAssertEqual(
           error,
           .tooShort(minimum: 3),
-          "Expected '\(name)' to be too short, but got different error: \(error)")
+          "Expected '\(name)' to be too short, but got different error: \(error)"
+        )
       }
     }
   }
@@ -64,7 +66,8 @@ final class NameValidationTests: XCTestCase {
       XCTAssertEqual(
         error,
         .tooLong(maximum: 30),
-        "Expected '\(name)' to be too long, but got different error: \(error)")
+        "Expected '\(name)' to be too long, but got different error: \(error)"
+      )
     }
   }
 
@@ -87,7 +90,8 @@ final class NameValidationTests: XCTestCase {
         XCTAssertEqual(
           error,
           .invalidCharacters,
-          "Expected '\(name)' to contain invalid characters")
+          "Expected '\(name)' to contain invalid characters"
+        )
       }
     }
   }
@@ -102,7 +106,8 @@ final class NameValidationTests: XCTestCase {
       XCTAssertEqual(
         error,
         .tooShort(minimum: 3),
-        "Expected '\(name)' to contain invalid characters")
+        "Expected '\(name)' to contain invalid characters"
+      )
     }
   }
 

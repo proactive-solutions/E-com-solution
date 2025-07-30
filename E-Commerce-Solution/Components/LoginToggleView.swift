@@ -21,7 +21,8 @@ struct LoginToggleView: View {
         action: {
           if selectedMode == .existing { return }
           selectedMode = .existing
-        })
+        }
+      )
 
       // Sign Up Button
       createToggleButton(
@@ -30,7 +31,8 @@ struct LoginToggleView: View {
         action: {
           if selectedMode == .new { return }
           selectedMode = .new
-        })
+        }
+      )
     }
     .background(Color(.systemGray6))
     .clipShape(Capsule())
@@ -39,8 +41,8 @@ struct LoginToggleView: View {
   private func createToggleButton(
     title: String,
     isSelected: Bool,
-    action: @escaping () -> Void) -> some View
-  {
+    action: @escaping () -> Void
+  ) -> some View {
     Button(action: action) {
       Text(title)
         .font(.system(size: 16, weight: .medium))

@@ -12,12 +12,13 @@ public struct Password: Equatable, Sendable {
   public init(
     _ value: String,
     specialCharacters: String = Validator.defaultSpecialCharacters,
-    requirements: Set<Validator.PasswordValidationRequirement> = Validator.defaultPasswordRequirements) throws(Validator.PasswordValidationError)
-  {
+    requirements: Set<Validator.PasswordValidationRequirement> = Validator.defaultPasswordRequirements
+  ) throws(Validator.PasswordValidationError) {
     let result = Validator.validate(
       password: value,
       against: requirements,
-      specialCharacters: specialCharacters)
+      specialCharacters: specialCharacters
+    )
     switch result {
     case .success:
       self.value = value

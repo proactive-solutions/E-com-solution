@@ -13,7 +13,8 @@ let package = Package(
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
       name: "DataModels",
-      targets: ["DataModels"]),
+      targets: ["DataModels"]
+    ),
   ],
   dependencies: [
     .package(name: "ValidationKit", path: "../ValidationKit"),
@@ -28,8 +29,11 @@ let package = Package(
       ],
       swiftSettings: [
         .swiftLanguageMode(.v6),
-      ]),
+      ]
+    ),
     .testTarget(
       name: "DataModelsTests",
-      dependencies: ["DataModels"]),
-  ])
+      dependencies: ["DataModels"]
+    ),
+  ]
+)
