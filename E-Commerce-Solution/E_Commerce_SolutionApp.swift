@@ -5,8 +5,8 @@
 //  Created by Pawan Sharma on 12/06/2025.
 //
 
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 
 @main
 struct E_Commerce_SolutionApp: App {
@@ -16,11 +16,11 @@ struct E_Commerce_SolutionApp: App {
   var body: some Scene {
     WindowGroup {
       LoginRegistrationView(
-          store: Store(
-              initialState: FirebaseAuthFeature.State()
-          ) {
-              FirebaseAuthFeature()
-          }
+        store: Store(
+          initialState: FirebaseAuthFeature.State()
+        ) {
+          FirebaseAuthFeature()
+        }
       )
     }
   }

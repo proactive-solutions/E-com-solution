@@ -15,7 +15,7 @@ import ValidationKit
 struct LoginRegistrationView: View {
   let store: StoreOf<FirebaseAuthFeature>
 
-  private let emailStore = Store(initialState: EmailValidationFeature.State()){
+  private let emailStore = Store(initialState: EmailValidationFeature.State()) {
     EmailValidationFeature()
   }
 
@@ -33,7 +33,7 @@ struct LoginRegistrationView: View {
         VStack(spacing: 32) {
           // Header Section
           LoginHeaderView()
-          
+
           // Toggle Section
           LoginToggleView(
             selectedMode: viewStore.binding(
@@ -44,11 +44,11 @@ struct LoginRegistrationView: View {
             // Email Field
             EmailValidationView(store: emailStore)
             PasswordValidationView(store: passwordStore)
-            
+
             if store.selectedMode == .new {
               NameValidationView(store: nameStore)
             }
-            
+
             // Forgot Password Link
             HStack {
               Spacer()
@@ -56,7 +56,7 @@ struct LoginRegistrationView: View {
                 .font(.system(size: 14))
                 .foregroundColor(.blue)
             }
-            
+
             if store.selectedMode == .new {
               PrimaryButton(
                 title: "Sign Up",
@@ -69,21 +69,21 @@ struct LoginRegistrationView: View {
                   else { return }
                   viewStore.send(.signUp(email: email, password: password, name: name))
                 })
-              .alert(isPresented: Binding(
-                get: {
-                  guard let _ = store.errorMessage else { return false }
-                  return true
-                },
-                set: { value in
+                .alert(isPresented: Binding(
+                  get: {
+                    guard let _ = store.errorMessage else { return false }
+                    return true
+                  },
+                  set: { _ in
 
-                })) {
-                  Alert(
-                    title: Text("Attention"),
-                    message: Text(store.errorMessage ?? "Unknown error!"),
-                    dismissButton: .default(Text("Ok")))
+                  })) {
+                    Alert(
+                      title: Text("Attention"),
+                      message: Text(store.errorMessage ?? "Unknown error!"),
+                      dismissButton: .default(Text("Ok")))
                 }
             }
-            
+
             if store.selectedMode == .existing {
               // Sign In Button
               PrimaryButton(
@@ -94,25 +94,25 @@ struct LoginRegistrationView: View {
                     let email = try? emailStore.validatedEmailResult?.get(),
                     let password = try? passwordStore.validatedPasswordResult?.get()
                   else { return }
-                  
+
                   viewStore.send(.signIn(email: email, password: password))
                 })
-              .alert(isPresented: Binding(
-                get: {
-                  guard let _ = store.errorMessage else { return false }
-                  return true
-                },
-                set: { value in
+                .alert(isPresented: Binding(
+                  get: {
+                    guard let _ = store.errorMessage else { return false }
+                    return true
+                  },
+                  set: { _ in
 
-                })) {
-                  Alert(
-                    title: Text("Attention"),
-                    message: Text(store.errorMessage ?? "Unknown error!"),
-                    dismissButton: .default(Text("Ok")))
+                  })) {
+                    Alert(
+                      title: Text("Attention"),
+                      message: Text(store.errorMessage ?? "Unknown error!"),
+                      dismissButton: .default(Text("Ok")))
                 }
             }
           }
-          
+
           // Social Login Section
           SocialLoginView(
             onGoogleLogin: {},
@@ -122,6 +122,12 @@ struct LoginRegistrationView: View {
         .padding(.vertical, 32)
       }
       .background(Color(.systemBackground))
+      .onAppear {
+        viewStore.send(.startListeningToAuthState)
+      }
+      .onDisappear {
+        viewStore.send(.stopListeningToAuthState)
+      }
     }
   }
 }
@@ -130,11 +136,11 @@ struct LoginRegistrationView: View {
 
 #Preview {
   LoginRegistrationView(
-      store: Store(
-          initialState: FirebaseAuthFeature.State()
-      ) {
-          FirebaseAuthFeature()
-      }
+    store: Store(
+      initialState: FirebaseAuthFeature.State()
+    ) {
+      FirebaseAuthFeature()
+    }
   )
 }
 

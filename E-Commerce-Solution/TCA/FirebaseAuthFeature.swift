@@ -75,9 +75,12 @@ struct FirebaseAuthFeature {
       case .signOut:
         state.isLoading = true
 
-        return .run { _ in
-          let result = await firebaseAuthClient.signOut()
-          // await send(.authResponse(result.map { _ in nil as AuthUser? }.mapError { $0 }))
+        return .run { send in
+          let signOutResult = await firebaseAuthClient.signOut()
+          switch signOutResult {
+          case let .failure(err): await send(.authResponse(.failure(err)))
+          case .success         : await send(.authStateChanged(nil))
+          }
         }
 
       case let .authStateChanged(user):
@@ -149,13 +152,13 @@ enum AuthError: Error, Equatable {
 
   var localizedDescription: String {
     switch self {
-    case .invalidEmail      : "Invalid email address"
-    case .wrongPassword     : "Incorrect password"
-    case .userNotFound      : "No account found with this email"
-    case .emailAlreadyInUse : "Email address is already in use"
-    case .weakPassword      : "Password is too weak"
-    case .networkError      : "Network error occurred"
-    case let .unknown(msg)  : msg
+    case .invalidEmail     : "Invalid email address"
+    case .wrongPassword    : "Incorrect password"
+    case .userNotFound     : "No account found with this email"
+    case .emailAlreadyInUse: "Email address is already in use"
+    case .weakPassword     : "Password is too weak"
+    case .networkError     : "Network error occurred"
+    case let .unknown(msg) : msg
     }
   }
 

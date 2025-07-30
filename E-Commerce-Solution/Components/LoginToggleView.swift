@@ -18,13 +18,19 @@ struct LoginToggleView: View {
       createToggleButton(
         title: "Login",
         isSelected: selectedMode == .existing,
-        action: { selectedMode = .existing })
+        action: {
+          if selectedMode == .existing { return }
+          selectedMode = .existing
+        })
 
       // Sign Up Button
       createToggleButton(
         title: "Sign Up",
         isSelected: selectedMode == .new,
-        action: { selectedMode = .new })
+        action: {
+          if selectedMode == .new { return }
+          selectedMode = .new
+        })
     }
     .background(Color(.systemGray6))
     .clipShape(Capsule())

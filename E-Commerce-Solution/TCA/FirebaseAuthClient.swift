@@ -13,16 +13,16 @@ import Foundation
 // MARK: - Firebase Auth Client Protocol
 
 struct FirebaseAuthClient {
-  var signIn: @Sendable (
+  let signIn: @Sendable (
     DataModels.EmailAddress,
     DataModels.Password) async -> Result<AuthUser, AuthError>
-  var signUp: @Sendable (
+  let signUp: @Sendable (
     DataModels.EmailAddress,
     DataModels.Password,
     DataModels.Name) async -> Result<AuthUser, AuthError>
-  var signOut: @Sendable () async -> Result<Void, AuthError>
-  var authStateStream: @Sendable () -> AsyncStream<AuthUser?>
-  var getCurrentUser: @Sendable () -> AuthUser?
+  let signOut: @Sendable () async -> Result<Void, AuthError>
+  let authStateStream: @Sendable () -> AsyncStream<AuthUser?>
+  let getCurrentUser: @Sendable () -> AuthUser?
 }
 
 // MARK: - Live Implementation
@@ -34,7 +34,7 @@ extension FirebaseAuthClient {
         Auth
           .auth()
           .signIn(withEmail: email.value, password: password.value) { result, error in
-            if let error = error {
+            if let error {
               continuation
                 .resume(returning: .failure(AuthError(from: error)))
             } else if let user = result?.user {
@@ -53,7 +53,7 @@ extension FirebaseAuthClient {
         Auth
           .auth()
           .createUser(withEmail: email.value, password: password.value) { result, error in
-            if let error = error {
+            if let error {
               continuation
                 .resume(returning: .failure(AuthError(from: error)))
             } else if let user = result?.user {
@@ -61,7 +61,7 @@ extension FirebaseAuthClient {
               let changeRequest = user.createProfileChangeRequest()
               changeRequest.displayName = name.value
               changeRequest.commitChanges { error in
-                if let error = error {
+                if let error {
                   continuation
                     .resume(returning: .failure(AuthError(from: error)))
                 } else {
@@ -138,12 +138,11 @@ extension FirebaseAuthClient {
         return .failure(.emailAlreadyInUse)
       }
 
-      return .success(
-        AuthUser(
-          uid: "new-user-uid",
-          email: email.value,
-          displayName: name.value,
-          isEmailVerified: false))
+      return .success(AuthUser(
+        uid: "new-user-uid",
+        email: email.value,
+        displayName: name.value,
+        isEmailVerified: false))
     },
 
     signOut: {
