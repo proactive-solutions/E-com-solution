@@ -16,10 +16,10 @@ struct ErrorMessageView: View {
     HStack(spacing: 8) {
       Image(systemName: "exclamationmark.circle.fill")
         .foregroundColor(.red)
-        .font(.system(size: 16))
+        .font(.caption)
 
       Text(message)
-        .font(.system(size: 14))
+        .font(.caption)
         .foregroundColor(.red)
 
       Spacer()

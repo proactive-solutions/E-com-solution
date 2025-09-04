@@ -16,7 +16,7 @@ struct SocialLoginView: View {
   var body: some View {
     VStack(spacing: 16) {
       Text("or")
-        .font(.system(size: 16))
+        .font(.body)
         .foregroundColor(.secondary)
 
       VStack(spacing: 12) {
@@ -36,7 +36,8 @@ struct SocialLoginView: View {
           action: onAppleLogin
         ) {
           Image(systemName: "apple.logo")
-            .font(.system(size: 18, weight: .medium))
+            .font(.body)
+            .fontWeight(.medium)
             .foregroundColor(.black)
         }
       }

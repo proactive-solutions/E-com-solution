@@ -42,7 +42,8 @@ struct CustomTextField<TrailingContent: View>: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
       Text(title)
-        .font(.system(size: 16, weight: .medium))
+        .font(.caption)
+        .fontWeight(.medium)
         .foregroundColor(.primary)
 
       HStack {

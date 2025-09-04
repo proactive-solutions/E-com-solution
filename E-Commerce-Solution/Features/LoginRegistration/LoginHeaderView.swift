@@ -18,7 +18,7 @@ struct LoginHeaderView: View {
         .frame(width: 80, height: 80)
         .overlay(
           Image(systemName: "person.crop.circle.fill.badge.plus")
-            .font(.system(size: 32))
+            .font(.title)
             .foregroundColor(.white)
         )
 

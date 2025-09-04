@@ -38,14 +38,16 @@ struct SocialLoginButton<IconContent: View>: View {
       HStack(spacing: 12) {
         if IconContent.self == EmptyView.self {
           Text(icon)
-            .font(.system(size: 18, weight: .bold))
+            .font(.headline)
+            .fontWeight(.medium)
             .foregroundColor(foregroundColor)
         } else {
           iconContent()
         }
 
         Text(title)
-          .font(.system(size: 16, weight: .medium))
+          .font(.headline)
+          .fontWeight(.medium)
           .foregroundColor(foregroundColor)
 
         Spacer()
@@ -61,4 +63,15 @@ struct SocialLoginButton<IconContent: View>: View {
     }
     .buttonStyle(PlainButtonStyle())
   }
+}
+
+#Preview {
+  SocialLoginButton(
+    title: "Google",
+    icon: "",
+    backgroundColor: Color.red,
+    foregroundColor: Color.white,
+    action: {}) {
+      EmptyView()
+    }
 }

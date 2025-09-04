@@ -20,10 +20,10 @@ struct PrimaryButton: View {
         if isLoading {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle(tint: .white))
-            .scaleEffect(0.8)
         } else {
           Text(title)
-            .font(.system(size: 18, weight: .semibold))
+            .font(.body)
+            .fontWeight(.semibold)
             .foregroundColor(.white)
         }
       }

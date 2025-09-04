@@ -65,7 +65,7 @@ struct LoginRegistrationView: View {
             HStack {
               Spacer()
               Button("Forgot Password?", action: {})
-                .font(.system(size: 14))
+                .font(.caption)
                 .foregroundColor(.blue)
             }
 
