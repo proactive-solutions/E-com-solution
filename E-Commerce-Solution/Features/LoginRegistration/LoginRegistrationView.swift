@@ -14,28 +14,20 @@ import ValidationKit
 
 struct LoginRegistrationView: View {
   private let emailStore = Store(
-    initialState: EmailValidationFeature.State())
-  {
-    EmailValidationFeature()
-  }
+    initialState: EmailValidationFeature.State()
+  ) { EmailValidationFeature() }
 
   private let passwordStore = Store(
-    initialState: PasswordValidationFeature.State())
-  {
-    PasswordValidationFeature()
-  }
+    initialState: PasswordValidationFeature.State()
+  ) { PasswordValidationFeature() }
 
   private let nameStore = Store(
-    initialState: NameValidationFeature.State())
-  {
-    NameValidationFeature()
-  }
+    initialState: NameValidationFeature.State()
+  ) { NameValidationFeature() }
 
   private let store: StoreOf<FirebaseAuthFeature> = Store(
-    initialState: FirebaseAuthFeature.State())
-  {
-    FirebaseAuthFeature()
-  }
+    initialState: FirebaseAuthFeature.State()
+  ) { FirebaseAuthFeature() }
 
   var body: some View {
     WithViewStore(store, observe: { $0 }) { viewStore in
@@ -57,9 +49,7 @@ struct LoginRegistrationView: View {
             EmailValidationView(store: emailStore)
             PasswordValidationView(store: passwordStore)
 
-            if store.selectedMode == .new {
-              NameValidationView(store: nameStore)
-            }
+            if store.selectedMode == .new { NameValidationView(store: nameStore) }
 
             // Forgot Password Link
             HStack {
@@ -120,12 +110,6 @@ struct LoginRegistrationView: View {
               }
             }
           }
-
-          // Social Login Section
-          SocialLoginView(
-            onGoogleLogin: {},
-            onAppleLogin: {}
-          )
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 32)
