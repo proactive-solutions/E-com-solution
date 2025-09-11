@@ -74,6 +74,22 @@ extension FirebaseAuthClient {
       }
     },
 
+    sendPasswordReset: { email in
+      await withCheckedContinuation { continuation in
+        Auth
+          .auth()
+          .sendPasswordReset(withEmail: email) { error in
+            if let resetError = error {
+              continuation
+                .resume(returning: .failure(DataModels.AuthError.from(resetError)))
+            } else {
+              continuation
+                .resume(returning: .success(()))
+            }
+          }
+      }
+    },
+
     authStateStream: {
       AsyncStream { continuation in
         let handle = Auth

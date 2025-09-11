@@ -9,6 +9,7 @@ import ComposableArchitecture
 import DataModels
 import FirebaseAuth
 import Foundation
+import ValidationKit
 
 @Reducer
 struct FirebaseAuthFeature {
@@ -19,11 +20,10 @@ struct FirebaseAuthFeature {
     var errorMessage: String?
     var showErrorAlert = false
     var selectedMode = UserAuthMode.existing
+    var showForgotPassword = false
 
     // Computed properties
-    var isSignedIn: Bool {
-      currentUser != nil
-    }
+    var isSignedIn: Bool { currentUser != nil }
   }
 
   enum Action {
@@ -43,6 +43,8 @@ struct FirebaseAuthFeature {
     case startListeningToAuthState
     case stopListeningToAuthState
     case switchAuthMode
+    case showForgotPassword
+    case hideForgotPassword
   }
 
   @Dependency(\.firebaseAuthClient) var firebaseAuthClient
@@ -60,8 +62,7 @@ struct FirebaseAuthFeature {
         state.isLoading = true
 
         return .run { send in
-          let result = await firebaseAuthClient
-            .signIn(email, password)
+          let result = await firebaseAuthClient.signIn(email, password)
           await send(.authResponse(result))
         }
 
@@ -69,8 +70,7 @@ struct FirebaseAuthFeature {
         state.isLoading = true
 
         return .run { send in
-          let result = await firebaseAuthClient
-            .signUp(email, password, name)
+          let result = await firebaseAuthClient.signUp(email, password, name)
           await send(.authResponse(result))
         }
 
@@ -108,6 +108,14 @@ struct FirebaseAuthFeature {
       case .dismissErrorAlert:
         state.showErrorAlert = false
         state.errorMessage = nil
+        return .none
+
+      case .showForgotPassword:
+        state.showForgotPassword = true
+        return .none
+
+      case .hideForgotPassword:
+        state.showForgotPassword = false
         return .none
 
       case .startListeningToAuthState:

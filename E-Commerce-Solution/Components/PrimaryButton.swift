@@ -12,7 +12,15 @@ import SwiftUI
 struct PrimaryButton: View {
   let title: String
   let isLoading: Bool
+  let isEnabled: Bool
   let action: () -> Void
+
+  init(title: String, isLoading: Bool = false, isEnabled: Bool = true, action: @escaping () -> Void) {
+    self.title = title
+    self.isLoading = isLoading
+    self.isEnabled = isEnabled
+    self.action = action
+  }
 
   var body: some View {
     Button(action: action) {
@@ -29,10 +37,10 @@ struct PrimaryButton: View {
       }
       .frame(maxWidth: .infinity)
       .frame(height: 56)
-      .background(Color.blue)
+      .background(isEnabled && !isLoading ? Color.blue : Color.blue.opacity(0.6))
       .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-    .disabled(isLoading)
+    .disabled(isLoading || !isEnabled)
     .buttonStyle(PlainButtonStyle())
   }
 }
@@ -47,6 +55,11 @@ struct PrimaryButton: View {
     PrimaryButton(
       title: "Button",
       isLoading: true,
+      action: {}
+    )
+    PrimaryButton(
+      title: "Disabled Button",
+      isEnabled: false,
       action: {}
     )
   }

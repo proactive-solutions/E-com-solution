@@ -54,9 +54,11 @@ struct LoginRegistrationView: View {
             // Forgot Password Link
             HStack {
               Spacer()
-              Button("Forgot Password?", action: {})
-                .font(.caption)
-                .foregroundColor(.blue)
+              Button("Forgot Password?") {
+                viewStore.send(.showForgotPassword)
+              }
+              .font(.caption)
+              .foregroundColor(.blue)
             }
 
             if store.selectedMode == .new {
@@ -120,6 +122,16 @@ struct LoginRegistrationView: View {
       }
       .onDisappear {
         viewStore.send(.stopListeningToAuthState)
+      }
+      .sheet(isPresented: viewStore.binding(
+        get: \.showForgotPassword,
+        send: .hideForgotPassword
+      )) {
+        ForgotPasswordView(
+          onDismiss: {
+            viewStore.send(.hideForgotPassword)
+          }
+        )
       }
     }
   }

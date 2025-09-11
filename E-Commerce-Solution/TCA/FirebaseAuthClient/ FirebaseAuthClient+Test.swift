@@ -1,5 +1,5 @@
 //
-//   FirebaseAuthClient+Test.swift
+//    FirebaseAuthClient+Test.swift
 //  E-Commerce-Solution
 //
 //  Created by Pawan Sharma on 30/07/2025.
@@ -48,6 +48,18 @@ extension FirebaseAuthClient {
 
     signOut: {
       try? await Task.sleep(for: .milliseconds(200))
+      return .success(())
+    },
+
+    sendPasswordReset: { email in
+      try? await Task.sleep(for: .milliseconds(300))
+
+      // Mock validation - simulate some email validation
+      if email.isEmpty || !email.contains("@") {
+        return .failure(.invalidEmail)
+      }
+
+      // Mock success for valid email format
       return .success(())
     },
 
