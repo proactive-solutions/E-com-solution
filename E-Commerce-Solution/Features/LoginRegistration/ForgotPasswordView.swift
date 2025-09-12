@@ -9,8 +9,8 @@ struct ForgotPasswordView: View {
   let onDismiss: () -> Void
 
   var body: some View {
+    WithViewStore(forgotPasswordStore, observe: { $0 }) { viewStore in
       NavigationView {
-        WithViewStore(forgotPasswordStore, observe: { $0 }) { viewStore in
         VStack(spacing: 20) {
           // Forgot Password Section
           Image(systemName: "key.fill")
@@ -63,12 +63,16 @@ struct ForgotPasswordView: View {
             .textFieldStyle(RoundedBorderTextFieldStyle())
             .autocapitalization(.none)
             .keyboardType(.emailAddress)
+
+            if let validationError = viewStore.emailValidationError {
+              ErrorMessageView(message: validationError)
+            }
           }
           
           // Send Reset Link Button
           PrimaryButton(
             title: "Send Reset Link",
-            isLoading: viewStore.isLoading,
+            isLoading: viewStore.forgotPasswordLoading,
             isEnabled: viewStore.isForgotPasswordEmailValid,
             action: { viewStore.send(.sendPasswordReset) }
           )
@@ -80,7 +84,7 @@ struct ForgotPasswordView: View {
           .foregroundColor(.gray)
           .multilineTextAlignment(.center)
           .padding(.top, 10)
-          .disabled(viewStore.isLoading)
+          .disabled(viewStore.forgotPasswordLoading)
 
           Spacer()
         }
@@ -94,10 +98,10 @@ struct ForgotPasswordView: View {
         }
         .alert(isPresented: .constant(viewStore.forgotPasswordMessage != nil)) {
           Alert(
-            title: Text(viewStore.isSuccess ? "Success" : "Error"),
+            title: Text(viewStore.forgotPasswordSuccess ? "Success" : "Error"),
             message: Text(viewStore.forgotPasswordMessage ?? ""),
             dismissButton: .default(Text("OK")) {
-              if viewStore.isSuccess { onDismiss() }
+              if viewStore.forgotPasswordSuccess { onDismiss() }
             }
           )
         }

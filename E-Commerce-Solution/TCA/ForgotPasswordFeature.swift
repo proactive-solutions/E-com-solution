@@ -14,15 +14,16 @@ import ValidationKit
 @Reducer
 struct ForgotPasswordFeature {
   struct State: Equatable {
-    var forgotPasswordEmail = ""
     var forgotPasswordLoading = false
-    var isSuccess = false
-    var isLoading = false
     var forgotPasswordSuccess = false
     var forgotPasswordMessage: String?
+    var emailValidationError: String?
+    var forgotPasswordEmail = ""
+    fileprivate(set) var validatedEmailResult: Result<DataModels.EmailAddress, Validator.EmailValidationError>?
 
     var isForgotPasswordEmailValid: Bool {
-      switch Validator.validate(email: forgotPasswordEmail) {
+      guard let result = validatedEmailResult else { return false }
+      switch result {
       case .success: return true
       case .failure: return false
       }
@@ -34,16 +35,29 @@ struct ForgotPasswordFeature {
     case sendPasswordReset
     case passwordResetResponse(Result<Void, AuthError>)
     case dismissForgotPasswordAlert
+    case validateEmail
   }
 
+  @Dependency(\.continuousClock) var clock
   @Dependency(\.firebaseAuthClient) var firebaseAuthClient
+
+  private enum CancelID { case emailValidation }
 
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .validateEmail:
+        return validateEmailEffect(state: &state)
+
       case let .forgotPasswordEmailChanged(email):
         state.forgotPasswordEmail = email.lowercased().trimmingCharacters(in: .whitespaces)
-        return .none
+
+        // Debounce validation - wait 0.3 seconds after user stops typing
+        return .run { send in
+          try await clock.sleep(for: .milliseconds(300))
+          await send(.validateEmail)
+        }
+        .cancellable(id: CancelID.emailValidation)
 
       case .dismissForgotPasswordAlert:
         state.forgotPasswordMessage = nil
@@ -77,6 +91,33 @@ struct ForgotPasswordFeature {
 
         return .none
       }
+    }
+  }
+
+  private func validateEmailEffect(state: inout State) -> Effect<Action> {
+    // Skip validation for empty text (don't show error immediately)
+    guard !state.forgotPasswordEmail.isEmpty else {
+      state.emailValidationError = nil
+      state.validatedEmailResult = .failure(.empty)
+      return .none
+    }
+
+    do {
+      let validatedEmail = try EmailAddress(state.forgotPasswordEmail)
+      state.emailValidationError = nil
+      state.validatedEmailResult = .success(validatedEmail)
+    } catch {
+      // Email is invalid
+      state.emailValidationError = emailErrorMessage(for: error)
+      state.validatedEmailResult = .failure(error)
+    }
+    return .none
+  }
+
+  private func emailErrorMessage(for error: Validator.EmailValidationError) -> String {
+    switch error {
+    case .empty: "Email address is empty".localize()
+    case .invalidEmailAddress: "Invalid email address".localize()
     }
   }
 }
