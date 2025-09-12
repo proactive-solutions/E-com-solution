@@ -23,6 +23,7 @@ struct FirebaseAuthClient {
     DataModels.Name
   ) async -> Result<DataModels.AuthUser, DataModels.AuthError>
   let signOut: @Sendable () async -> Result<Void, DataModels.AuthError>
+  let sendPasswordReset: @Sendable (String) async -> Result<Void, DataModels.AuthError>
   let authStateStream: @Sendable () -> AsyncStream<DataModels.AuthUser?>
   let getCurrentUser: @Sendable () -> DataModels.AuthUser?
 }

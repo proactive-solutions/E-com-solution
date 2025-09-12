@@ -21,8 +21,8 @@ struct NameValidationView: View {
             get: \.nameText,
             send: NameValidationFeature.Action.nameTextChanged
           ),
-          placeholder: "Enter your full name",
-          keyboardType: .emailAddress,
+          placeholder: "Enter your first name",
+          keyboardType: .alphabet,
           autoCorrection: false,
           autoCapitalization: .never,
           hasError: viewStore.errorMessage != nil

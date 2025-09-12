@@ -14,28 +14,20 @@ import ValidationKit
 
 struct LoginRegistrationView: View {
   private let emailStore = Store(
-    initialState: EmailValidationFeature.State())
-  {
-    EmailValidationFeature()
-  }
+    initialState: EmailValidationFeature.State()
+  ) { EmailValidationFeature() }
 
   private let passwordStore = Store(
-    initialState: PasswordValidationFeature.State())
-  {
-    PasswordValidationFeature()
-  }
+    initialState: PasswordValidationFeature.State()
+  ) { PasswordValidationFeature() }
 
   private let nameStore = Store(
-    initialState: NameValidationFeature.State())
-  {
-    NameValidationFeature()
-  }
+    initialState: NameValidationFeature.State()
+  ) { NameValidationFeature() }
 
   private let store: StoreOf<FirebaseAuthFeature> = Store(
-    initialState: FirebaseAuthFeature.State())
-  {
-    FirebaseAuthFeature()
-  }
+    initialState: FirebaseAuthFeature.State()
+  ) { FirebaseAuthFeature() }
 
   var body: some View {
     WithViewStore(store, observe: { $0 }) { viewStore in
@@ -57,16 +49,16 @@ struct LoginRegistrationView: View {
             EmailValidationView(store: emailStore)
             PasswordValidationView(store: passwordStore)
 
-            if store.selectedMode == .new {
-              NameValidationView(store: nameStore)
-            }
+            if store.selectedMode == .new { NameValidationView(store: nameStore) }
 
             // Forgot Password Link
             HStack {
               Spacer()
-              Button("Forgot Password?", action: {})
-                .font(.system(size: 14))
-                .foregroundColor(.blue)
+              Button("Forgot Password?") {
+                viewStore.send(.showForgotPassword)
+              }
+              .font(.caption)
+              .foregroundColor(.blue)
             }
 
             if store.selectedMode == .new {
@@ -120,12 +112,6 @@ struct LoginRegistrationView: View {
               }
             }
           }
-
-          // Social Login Section
-          SocialLoginView(
-            onGoogleLogin: {},
-            onAppleLogin: {}
-          )
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 32)
@@ -136,6 +122,16 @@ struct LoginRegistrationView: View {
       }
       .onDisappear {
         viewStore.send(.stopListeningToAuthState)
+      }
+      .sheet(isPresented: viewStore.binding(
+        get: \.showForgotPassword,
+        send: .hideForgotPassword
+      )) {
+        ForgotPasswordView(
+          onDismiss: {
+            viewStore.send(.hideForgotPassword)
+          }
+        )
       }
     }
   }

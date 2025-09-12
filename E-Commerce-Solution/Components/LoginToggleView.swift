@@ -45,7 +45,8 @@ struct LoginToggleView: View {
   ) -> some View {
     Button(action: action) {
       Text(title)
-        .font(.system(size: 16, weight: .medium))
+        .font(.body)
+        .fontWeight(.medium)
         .foregroundColor(isSelected ? .white : .secondary)
         .frame(maxWidth: .infinity)
         .frame(height: 48)
