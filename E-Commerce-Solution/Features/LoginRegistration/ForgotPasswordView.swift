@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
+import UIComponents
 
 struct ForgotPasswordView: View {
   private let forgotPasswordStore = Store(

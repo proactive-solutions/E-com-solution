@@ -9,17 +9,17 @@ import SwiftUI
 
 // MARK: - Custom Text Field Component
 
-struct CustomTextField<TrailingContent: View>: View {
+public struct CustomTextField<TrailingContent: View>: View {
   let title: String
-  @Binding var text: String
-  let placeholder: String
-  let keyboardType: UIKeyboardType
-  let autoCorrection: Bool
-  let autoCapitalization: TextInputAutocapitalization?
-  let hasError: Bool
-  @ViewBuilder let trailingContent: () -> TrailingContent
+  @Binding private var text: String
+    private let placeholder: String
+    private let keyboardType: UIKeyboardType
+    private let autoCorrection: Bool
+    private let autoCapitalization: TextInputAutocapitalization?
+    private let hasError: Bool
+  @ViewBuilder private let trailingContent: () -> TrailingContent
 
-  init(
+    public init(
     title: String,
     text: Binding<String>,
     placeholder: String,
@@ -39,7 +39,7 @@ struct CustomTextField<TrailingContent: View>: View {
     self.trailingContent = trailingContent
   }
 
-  var body: some View {
+    public var body: some View {
     VStack(alignment: .leading, spacing: 8) {
       Text(title)
         .font(.caption)

@@ -6,14 +6,14 @@
 //
 import SwiftUI
 
-struct HeadingText: View {
+public struct HeadingText: View {
   private let value: String
 
-  init(_ value: String) {
+    public init(_ value: String) {
     self.value = value
   }
 
-  var body: some View {
+    public var body: some View {
     Text(value)
       .font(.largeTitle)
       .fontWeight(.bold)

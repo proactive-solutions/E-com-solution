@@ -9,10 +9,14 @@ import SwiftUI
 
 // MARK: - Error Message Component
 
-struct ErrorMessageView: View {
-  let message: String
+public struct ErrorMessageView: View {
+    public  init(message: String) {
+        self.message = message
+    }
+    
+    private let message: String
 
-  var body: some View {
+    public var body: some View {
     HStack(spacing: 8) {
       Image(systemName: "exclamationmark.circle.fill")
         .foregroundColor(.red)

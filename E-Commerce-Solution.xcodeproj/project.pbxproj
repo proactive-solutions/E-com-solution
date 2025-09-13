@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1728BB6B2E7541AA00C07E32 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 1728BB6A2E7541AA00C07E32 /* UIComponents */; };
 		F24B7B422E0AC5C0005A7BDB /* DataModels in Frameworks */ = {isa = PBXBuildFile; productRef = F24B7B412E0AC5C0005A7BDB /* DataModels */; };
 		F25777952E699BB60097EA68 /* SwiftUIDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = F25777942E699BB60097EA68 /* SwiftUIDesignSystem */; };
 		F27471CB2E2F7756003C6E58 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F27471CA2E2F7756003C6E58 /* ComposableArchitecture */; };
@@ -65,6 +66,7 @@
 				F27471CB2E2F7756003C6E58 /* ComposableArchitecture in Frameworks */,
 				F25777952E699BB60097EA68 /* SwiftUIDesignSystem in Frameworks */,
 				F24B7B422E0AC5C0005A7BDB /* DataModels in Frameworks */,
+				1728BB6B2E7541AA00C07E32 /* UIComponents in Frameworks */,
 				F2B350DE2E097BEB00E36157 /* FirebaseAuth in Frameworks */,
 				F2B350E02E097BEB00E36157 /* FirebaseCore in Frameworks */,
 				F2D551922DFACB6E003841BA /* ValidationKit in Frameworks */,
@@ -137,6 +139,7 @@
 				F24B7B412E0AC5C0005A7BDB /* DataModels */,
 				F27471CA2E2F7756003C6E58 /* ComposableArchitecture */,
 				F25777942E699BB60097EA68 /* SwiftUIDesignSystem */,
+				1728BB6A2E7541AA00C07E32 /* UIComponents */,
 			);
 			productName = "E-Commerce-Solution";
 			productReference = F2D5515E2DFAC728003841BA /* E-Commerce-Solution.app */;
@@ -226,6 +229,7 @@
 				F24B7B402E0AC5C0005A7BDB /* XCLocalSwiftPackageReference "Packages/DataModels" */,
 				F27471C92E2F7756003C6E58 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				F25777932E699BB60097EA68 /* XCLocalSwiftPackageReference "Packages/SwiftUIDesignSystem" */,
+				1728BB692E7541AA00C07E32 /* XCLocalSwiftPackageReference "Packages/UIComponents" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2D5515F2DFAC728003841BA /* Products */;
@@ -610,6 +614,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		1728BB692E7541AA00C07E32 /* XCLocalSwiftPackageReference "Packages/UIComponents" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/UIComponents;
+		};
 		F24B7B402E0AC5C0005A7BDB /* XCLocalSwiftPackageReference "Packages/DataModels" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/DataModels;
@@ -644,6 +652,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1728BB6A2E7541AA00C07E32 /* UIComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UIComponents;
+		};
 		F24B7B412E0AC5C0005A7BDB /* DataModels */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DataModels;

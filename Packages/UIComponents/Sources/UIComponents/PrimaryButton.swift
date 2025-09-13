@@ -9,20 +9,20 @@ import SwiftUI
 
 // MARK: - Primary Button Component
 
-struct PrimaryButton: View {
-  let title: String
-  let isLoading: Bool
-  let isEnabled: Bool
-  let action: () -> Void
+public struct PrimaryButton: View {
+  private let title: String
+  private let isLoading: Bool
+  private let isEnabled: Bool
+  private let action: () -> Void
 
-  init(title: String, isLoading: Bool = false, isEnabled: Bool = true, action: @escaping () -> Void) {
+    public init(title: String, isLoading: Bool = false, isEnabled: Bool = true, action: @escaping () -> Void) {
     self.title = title
     self.isLoading = isLoading
     self.isEnabled = isEnabled
     self.action = action
   }
 
-  var body: some View {
+    public var body: some View {
     Button(action: action) {
       HStack {
         if isLoading {

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import UIComponents
 // MARK: - Login Header Component
 
 struct LoginHeaderView: View {

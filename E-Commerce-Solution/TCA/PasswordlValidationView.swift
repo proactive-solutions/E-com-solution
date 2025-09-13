@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import UIComponents
 import SwiftUI
 
 struct PasswordValidationView: View {

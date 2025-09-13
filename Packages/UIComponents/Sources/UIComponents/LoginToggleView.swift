@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import DataModels
 
 // MARK: - Login Toggle Component
 
-struct LoginToggleView: View {
-  @Binding var selectedMode: UserAuthMode
+public struct LoginToggleView: View {
+    public init(selectedMode: Binding<UserAuthMode>) {
+        _selectedMode = selectedMode
+    }
+    
+    @Binding private var selectedMode: DataModels.UserAuthMode
 
-  var body: some View {
+    public var body: some View {
     HStack(spacing: 0) {
       // Login Button
       createToggleButton(
