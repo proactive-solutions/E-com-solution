@@ -7,6 +7,10 @@ struct ForgotPasswordView: View {
     initialState: ForgotPasswordFeature.State()
   ) { ForgotPasswordFeature() }
 
+  private let emailStore = Store(
+    initialState: EmailValidationFeature.State()
+  ) { EmailValidationFeature() }
+
   let onDismiss: () -> Void
 
   var body: some View {
@@ -20,7 +24,7 @@ struct ForgotPasswordView: View {
             .foregroundColor(.blue)
             .background(Color.blue.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 10))
-          
+
           HeadingText("Forgot Password?")
           SubHeadingText("Don't worry! It happens. Please enter the email address associated with your account.")
           
@@ -50,37 +54,23 @@ struct ForgotPasswordView: View {
           .background(Color.blue.opacity(0.1))
           .cornerRadius(10)
           
-          // Email Input
-          VStack(alignment: .leading) {
-            Text("Email Address")
-              .font(.headline)
-            TextField(
-              "Enter your email address",
-              text: viewStore.binding(
-                get: \.forgotPasswordEmail,
-                send: { .forgotPasswordEmailChanged($0) }
-              )
-            )
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .autocapitalization(.none)
-            .keyboardType(.emailAddress)
-
-            if let validationError = viewStore.emailValidationError {
-              ErrorMessageView(message: validationError)
-            }
-          }
+          EmailValidationView(store: emailStore)
           
           // Send Reset Link Button
           PrimaryButton(
             title: "Send Reset Link",
             isLoading: viewStore.forgotPasswordLoading,
-            isEnabled: viewStore.isForgotPasswordEmailValid,
-            action: { viewStore.send(.sendPasswordReset) }
+            action: {
+              guard let email = try? emailStore.validatedEmailResult?.get() else { return }
+              viewStore.send(.sendPasswordReset(email.value))
+            }
           )
-          
+          .disabled(viewStore.forgotPasswordLoading)
+
           // Didn't receive email link
           Button("Didn't receive the email? Check your spam folder or resend link") {
-            viewStore.send(.sendPasswordReset)
+            guard let email = try? emailStore.validatedEmailResult?.get() else { return }
+            viewStore.send(.sendPasswordReset(email.value))
           }
           .foregroundColor(.gray)
           .multilineTextAlignment(.center)
@@ -111,14 +101,8 @@ struct ForgotPasswordView: View {
   }
 }
 
-//#Preview {
-//  ForgotPasswordView(
-//    email: .constant(""),
-//    isLoading: false,
-//    isEmailValid: true,
-//    message: nil,
-//    isSuccess: false,
-//    onSendReset: {},
-//    onDismiss: {}
-//  )
-//}
+#Preview {
+  ForgotPasswordView(onDismiss: {
+
+  })
+}

@@ -15,27 +15,20 @@ import ValidationKit
 struct FirebaseAuthFeature {
   @ObservableState
   struct State: Equatable {
-    var isLoading = false
-    var currentUser: DataModels.AuthUser?
-    var errorMessage: String?
-    var showErrorAlert = false
-    var selectedMode = UserAuthMode.existing
-    var showForgotPassword = false
+    fileprivate(set) var isLoading = false
+    fileprivate(set) var currentUser: DataModels.AuthUser?
+    fileprivate(set) var errorMessage: String?
+    fileprivate(set) var showErrorAlert = false
+    fileprivate(set) var selectedMode = UserAuthMode.existing
+    fileprivate(set) var showForgotPassword = false
 
     // Computed properties
     var isSignedIn: Bool { currentUser != nil }
   }
 
   enum Action {
-    case signIn(
-      email: DataModels.EmailAddress,
-      password: DataModels.Password
-    )
-    case signUp(
-      email: DataModels.EmailAddress,
-      password: DataModels.Password,
-      name: DataModels.Name
-    )
+    case signIn(email: EmailAddress, password: Password)
+    case signUp(email: EmailAddress, password: Password, name: Name)
     case signOut
     case authStateChanged(AuthUser?)
     case authResponse(Result<AuthUser, AuthError>)
@@ -81,7 +74,7 @@ struct FirebaseAuthFeature {
           let signOutResult = await firebaseAuthClient.signOut()
           switch signOutResult {
           case let .failure(err): await send(.authResponse(.failure(err)))
-          case .success         : await send(.authStateChanged(nil))
+          case .success: await send(.authStateChanged(nil))
           }
         }
 

@@ -7,16 +7,16 @@
 import SwiftUI
 
 public struct SubHeadingText: View {
-  private let value: String
+    private let value: String
 
     public init(_ value: String) {
-    self.value = value
-  }
+        self.value = value
+    }
 
     public var body: some View {
-    Text(value)
-      .font(.body)
-      .foregroundColor(.secondary)
-      .multilineTextAlignment(.center)
-  }
+        Text(value)
+            .font(.body)
+            .foregroundColor(.secondary)
+            .multilineTextAlignment(.center)
+    }
 }

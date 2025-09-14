@@ -7,16 +7,16 @@
 import SwiftUI
 
 public struct HeadingText: View {
-  private let value: String
+    private let value: String
 
     public init(_ value: String) {
-    self.value = value
-  }
+        self.value = value
+    }
 
     public var body: some View {
-    Text(value)
-      .font(.largeTitle)
-      .fontWeight(.bold)
-      .foregroundColor(.primary)
-  }
+        Text(value)
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .foregroundColor(.primary)
+    }
 }
