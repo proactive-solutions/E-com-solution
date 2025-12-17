@@ -17,13 +17,13 @@ extension DataModels.AuthError {
     }
 
     return switch AuthErrorCode(rawValue: authError.code) {
-    case .invalidEmail     : .invalidEmail
-    case .wrongPassword    : .wrongPassword
-    case .userNotFound     : .userNotFound
+    case .invalidEmail: .invalidEmail
+    case .wrongPassword: .wrongPassword
+    case .userNotFound: .userNotFound
     case .emailAlreadyInUse: .emailAlreadyInUse
-    case .weakPassword     : .weakPassword
-    case .networkError     : .networkError
-    default                : .unknown(authError.localizedDescription)
+    case .weakPassword: .weakPassword
+    case .networkError: .networkError
+    default: .unknown(authError.localizedDescription)
     }
   }
 }

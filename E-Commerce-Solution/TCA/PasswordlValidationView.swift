@@ -6,8 +6,8 @@
 //
 
 import ComposableArchitecture
-import UIComponents
 import SwiftUI
+import UIComponents
 
 struct PasswordValidationView: View {
   let store: StoreOf<PasswordValidationFeature>
