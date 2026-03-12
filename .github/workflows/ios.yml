@@ -20,7 +20,7 @@ jobs:
           xcodebuild test \
             -project E-Commerce-Solution.xcodeproj \
             -scheme E-Commerce-Solution \
-            -destination "platform=iOS Simulator,name=Any iOS Simulator Device" \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS:18.5' \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO
             
