@@ -9,6 +9,7 @@ import SwiftUI
 import UIComponents
 
 // MARK: - Main Tab Bar View
+
 struct MainTabView: View {
   var body: some View {
     TabView {
@@ -57,6 +58,7 @@ struct MainTabView: View {
 }
 
 // MARK: - Tab Selection Enum
+
 enum TabSelection: CaseIterable {
   case home, search, cart, profile
 
@@ -72,10 +74,11 @@ enum TabSelection: CaseIterable {
 }
 
 // MARK: - Tab Item Creation Helper
+
 @ViewBuilder
 private func createTabItem(
   imageName: String,
-  selectedImageName: String,
+  selectedImageName _: String,
   title: String
 ) -> some View {
   VStack {

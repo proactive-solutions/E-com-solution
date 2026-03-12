@@ -14,9 +14,9 @@ import ValidationKit
 struct EmailValidationFeature {
   @ObservableState
   struct State: Equatable {
-    fileprivate(set) var emailText = ""
-    fileprivate(set) var errorMessage: String?
-    fileprivate(set) var validatedEmailResult: Result<EmailAddress, Validator.EmailValidationError>?
+    public var emailText = ""
+    public var errorMessage: String?
+    public var validatedEmailResult: Result<EmailAddress, Validator.EmailValidationError>?
   }
 
   enum Action: BindableAction {
@@ -33,8 +33,7 @@ struct EmailValidationFeature {
 
     Reduce { state, action in
       switch action {
-      case .binding:
-        return .none
+      case .binding: return .none
 
       case let .emailTextChanged(text):
         state.emailText = text.lowercased()
@@ -46,8 +45,7 @@ struct EmailValidationFeature {
         }
         .cancellable(id: CancelID.emailValidation)
 
-      case .validateEmail:
-        return validateEmailEffect(state: &state)
+      case .validateEmail: return validateEmailEffect(state: &state)
       }
     }
   }

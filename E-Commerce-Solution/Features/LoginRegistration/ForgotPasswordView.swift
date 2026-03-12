@@ -27,13 +27,13 @@ struct ForgotPasswordView: View {
 
           HeadingText("Forgot Password?")
           SubHeadingText("Don't worry! It happens. Please enter the email address associated with your account.")
-          
+
           // How it works Section
           VStack(alignment: .leading, spacing: 10) {
             Text("How it works")
               .font(.headline)
               .foregroundColor(.blue)
-            
+
             HStack {
               Text("1")
                 .foregroundColor(.blue)
@@ -53,9 +53,9 @@ struct ForgotPasswordView: View {
           .padding()
           .background(Color.blue.opacity(0.1))
           .cornerRadius(10)
-          
+
           EmailValidationView(store: emailStore)
-          
+
           // Send Reset Link Button
           PrimaryButton(
             title: "Send Reset Link",
@@ -102,7 +102,5 @@ struct ForgotPasswordView: View {
 }
 
 #Preview {
-  ForgotPasswordView(onDismiss: {
-
-  })
+  ForgotPasswordView(onDismiss: {})
 }
