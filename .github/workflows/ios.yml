@@ -1,4 +1,4 @@
-name: iOS starter workflow
+name: iOS CI
 
 on:
   push:
@@ -8,37 +8,74 @@ on:
 
 jobs:
   build:
-    name: Build and Test default scheme using any available iPhone simulator
+    name: Build and Test
     runs-on: macos-latest
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set Default Scheme
+      
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+      
+      - name: Show Xcode Version
+        run: xcodebuild -version
+      
+      - name: Disable Macro Fingerprint Validation
+        run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
+      
+      - name: Detect Project Structure
+        id: detect
         run: |
-          scheme_list=$(xcodebuild -list -json | tr -d "\n")
-          default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
-          echo $default | cat >default
-          echo Using default scheme: $default
-      - name: Build
-        env:
-          scheme: ${{ 'default' }}
-          platform: ${{ 'iOS Simulator' }}
+          if ls *.xcworkspace 1> /dev/null 2>&1; then
+            PROJECT_TYPE="workspace"
+            PROJECT_FILE=$(ls *.xcworkspace | head -1)
+          else
+            PROJECT_TYPE="project"
+            PROJECT_FILE=$(ls *.xcodeproj | head -1)
+          fi
+          
+          SCHEME=$(xcodebuild -list -json -$PROJECT_TYPE "$PROJECT_FILE" | \
+                   jq -r '.project.schemes[0] // .workspace.schemes[0]')
+          
+          echo "project_type=$PROJECT_TYPE" >> $GITHUB_OUTPUT
+          echo "project_file=$PROJECT_FILE" >> $GITHUB_OUTPUT
+          echo "scheme=$SCHEME" >> $GITHUB_OUTPUT
+          
+          echo "Using $PROJECT_TYPE: $PROJECT_FILE"
+          echo "Using scheme: $SCHEME"
+      
+      - name: Resolve Package Dependencies
         run: |
-          # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
-          device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
-          if [ $scheme = default ]; then scheme=$(cat default); fi
-          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
-          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild build-for-testing -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
-      - name: Test
-        env:
-          scheme: ${{ 'default' }}
-          platform: ${{ 'iOS Simulator' }}
+          xcodebuild -resolvePackageDependencies \
+            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
+            -scheme "${{ steps.detect.outputs.scheme }}"
+      
+      - name: Build for Testing
         run: |
-          # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
-          device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
-          if [ $scheme = default ]; then scheme=$(cat default); fi
-          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
-          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild test-without-building -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
+          xcodebuild build-for-testing \
+            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
+            -scheme "${{ steps.detect.outputs.scheme }}" \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath ./DerivedData \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || exit 1
+      
+      - name: Run Tests
+        run: |
+          xcodebuild test-without-building \
+            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
+            -scheme "${{ steps.detect.outputs.scheme }}" \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath ./DerivedData \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || exit 1
+      
+      - name: Upload Test Results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./DerivedData/Logs/Test/*.xcresult
