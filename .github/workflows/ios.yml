@@ -7,75 +7,19 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build and Test
+  test:
     runs-on: macos-latest
     
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-      - name: Select Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
-      
-      - name: Show Xcode Version
-        run: xcodebuild -version
-      
-      - name: Disable Macro Fingerprint Validation
-        run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
-      
-      - name: Detect Project Structure
-        id: detect
+      - name: Build and Test
         run: |
-          if ls *.xcworkspace 1> /dev/null 2>&1; then
-            PROJECT_TYPE="workspace"
-            PROJECT_FILE=$(ls *.xcworkspace | head -1)
-          else
-            PROJECT_TYPE="project"
-            PROJECT_FILE=$(ls *.xcodeproj | head -1)
-          fi
+          defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
           
-          SCHEME=$(xcodebuild -list -json -$PROJECT_TYPE "$PROJECT_FILE" | \
-                   jq -r '.project.schemes[0] // .workspace.schemes[0]')
-          
-          echo "project_type=$PROJECT_TYPE" >> $GITHUB_OUTPUT
-          echo "project_file=$PROJECT_FILE" >> $GITHUB_OUTPUT
-          echo "scheme=$SCHEME" >> $GITHUB_OUTPUT
-          
-          echo "Using $PROJECT_TYPE: $PROJECT_FILE"
-          echo "Using scheme: $SCHEME"
-      
-      - name: Resolve Package Dependencies
-        run: |
-          xcodebuild -resolvePackageDependencies \
-            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
-            -scheme "${{ steps.detect.outputs.scheme }}"
-      
-      - name: Build for Testing
-        run: |
-          xcodebuild build-for-testing \
-            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
-            -scheme "${{ steps.detect.outputs.scheme }}" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            -derivedDataPath ./DerivedData \
+          xcodebuild test \
+            -project E-Commerce-Solution.xcodeproj \
+            -scheme E-Commerce-Solution \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
             -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty || exit 1
-      
-      - name: Run Tests
-        run: |
-          xcodebuild test-without-building \
-            -${{ steps.detect.outputs.project_type }} "${{ steps.detect.outputs.project_file }}" \
-            -scheme "${{ steps.detect.outputs.scheme }}" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            -derivedDataPath ./DerivedData \
-            -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty || exit 1
-      
-      - name: Upload Test Results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: ./DerivedData/Logs/Test/*.xcresult
+            CODE_SIGNING_ALLOWED=NO
