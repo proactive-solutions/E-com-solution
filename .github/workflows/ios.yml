@@ -26,15 +26,24 @@ jobs:
             -scheme E-Commerce-Solution \
             -project E-Commerce-Solution.xcodeproj
 
-      - name: Build
+      - - name: Build
         run: |
           xcodebuild build \
             -scheme E-Commerce-Solution \
             -project E-Commerce-Solution.xcodeproj \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty && exit ${PIPESTATUS[0]}
 
+      - name: Lint with SwiftLint
+        run: |
+          if which swiftlint > /dev/null; then
+            swiftlint lint --reporter github-actions-logging
+          else
+            echo "SwiftLint not installed, installing via Homebrew..."
+            brew install swiftlint
+            swiftlint lint --reporter github-actions-logging
+          fi
       - name: Lint with SwiftLint
         run: |
           if which swiftlint > /dev/null; then
