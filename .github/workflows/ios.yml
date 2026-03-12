@@ -1,26 +1,46 @@
-name: iOS CI
+name: iOS Build & Lint
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  test:
+  build-and-lint:
+    name: Build & Lint
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Build and Test
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Resolve Swift Package dependencies
         run: |
-          defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
-
-          xcodebuild test \
-            -project E-Commerce-Solution.xcodeproj \
+          xcodebuild -resolvePackageDependencies \
             -scheme E-Commerce-Solution \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS:18.5' \
-            -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO
-            
+            -project E-Commerce-Solution.xcodeproj
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -scheme E-Commerce-Solution \
+            -project E-Commerce-Solution.xcodeproj \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Lint with SwiftLint
+        run: |
+          if which swiftlint > /dev/null; then
+            swiftlint lint --reporter github-actions-logging
+          else
+            echo "SwiftLint not installed, installing via Homebrew..."
+            brew install swiftlint
+            swiftlint lint --reporter github-actions-logging
+          fi
